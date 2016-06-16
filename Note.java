@@ -10,6 +10,8 @@ public class Note implements Comparable<Note> {
   private int octave;
   private int duration;
   private int startTime;
+  private int instrument;
+  private int volume;
 
   /**
    * Constructor for a new Note
@@ -37,7 +39,34 @@ public class Note implements Comparable<Note> {
     this.octave = o;
     this.duration = d;
     this.startTime = s;
+    this.instrument = 0;
+    this.volume = 100;
   }
+
+  /**
+   * Constructor for a new Note
+   *
+   * @param p The pitch of the new note
+   * @param o The octave of the new note
+   * @param d The duration (in beats) of the new note
+   * @param s Start time for the new note
+   * @param i Instrument played by the MIDI player
+   * @param v Volume of the played note
+   * @throws IllegalArgumentException when passed null, sub-zero, or too large arguments
+   */
+  public Note(Pitch p, int o, int d, int s, int i, int v) throws IllegalArgumentException {
+    this(p, o, d, s);
+    if (i < 0) {
+      throw new IllegalArgumentException("Invalid instrument.");
+    }
+    this.instrument = i;
+    if (v < 0) {
+      throw new IllegalArgumentException("Invalid volume.");
+    }
+    this.volume = v;
+
+  }
+
 
   /**
    * Makes a copy of this note
@@ -166,6 +195,22 @@ public class Note implements Comparable<Note> {
     else {
       throw new IllegalArgumentException("Cannot decrease duration to be less than 0.");
     }
+  }
+
+  /**
+   * Returns the instrument the note is to be played on
+   * @return the instrument the note is to be played on
+   */
+  public int getInstrument() {
+    return this.instrument;
+  }
+
+  /**
+   * Returns the volume (velocity) the note is to be played at
+   * @return the volume (velocity) the note is to be played at
+   */
+  public int getVolume() {
+    return this.volume;
   }
 
   /**

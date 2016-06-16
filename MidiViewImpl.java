@@ -2,10 +2,12 @@ package cs3500.music.view;
 
 import javax.sound.midi.*;
 
+import cs3500.music.controller.IMusicController;
+
 /**
  * A skeleton for MIDI playback
  */
-public class MidiViewImpl {
+public class MidiViewImpl implements IMusicView {
   private final Synthesizer synth;
   private final Receiver receiver;
 
@@ -68,5 +70,10 @@ public class MidiViewImpl {
     this.receiver.send(start, -1);
     this.receiver.send(stop, this.synth.getMicrosecondPosition() + 200000);
     this.receiver.close(); // Only call this once you're done playing *all* notes
+  }
+
+  @Override
+  public void play(IMusicController piece) {
+
   }
 }

@@ -102,4 +102,10 @@ public interface GenericMusicPiece {
    * @return whether thepiece is currently flat
    */
   boolean isFlat();
+
+  /**
+   * Sets the tempo of the piece to the given tempo
+   * @param t the tempo the piece will be set to
+   */
+  void setTempo(int t);
 }

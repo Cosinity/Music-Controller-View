@@ -11,6 +11,8 @@ import java.util.Queue;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+import cs3500.music.util.CompositionBuilder;
+
 /**
  * A Model representing a musical composition.
  */
@@ -32,10 +34,17 @@ public class MusicModel implements GenericMusicPiece {
    * Default constructor - initializes the notes list to empty, total length to 0, and turns off
    * rendering of headers as flat.
    */
+
+  /**
+   * The tempo of the piece in microseconds per beat
+   */
+  private int tempo;
+
   public MusicModel() {
     this.notes = new ArrayList<Note>();
     this.totalLength = 0;
     this.isFlat = false;
+    this.tempo = 500000;
   }
 
   /**
@@ -47,6 +56,27 @@ public class MusicModel implements GenericMusicPiece {
   public MusicModel(List<Note> notesToAdd) {
     this();
     notesToAdd.forEach(this::addNote);
+  }
+
+  /**
+   * Sets up a music model with the given tempo
+   *
+   * @param tempo the given tempo for this piece
+   */
+  public MusicModel(int tempo) {
+    this();
+    this.tempo = tempo;
+  }
+
+  /**
+   * Sets up a music model with the given tempo and list of notes
+   *
+   * @param tempo the given tempo for this piece
+   * @param toAdd the notes to be added
+   */
+  public MusicModel(int tempo, List<Note> toAdd) {
+    this(toAdd);
+    this.tempo = tempo;
   }
 
   @Override
@@ -68,7 +98,7 @@ public class MusicModel implements GenericMusicPiece {
   @Override
   public void appendTo(GenericMusicPiece other) {
     ArrayList<Note> notesToSend = new ArrayList<Note>();
-    for (Note n: this.notes) {
+    for (Note n : this.notes) {
       notesToSend.add(n.copy());
     }
     other.append(notesToSend);
@@ -85,7 +115,7 @@ public class MusicModel implements GenericMusicPiece {
   @Override
   public void mixTo(GenericMusicPiece other) {
     ArrayList<Note> notesToSend = new ArrayList<Note>();
-    for (Note n: this.notes) {
+    for (Note n : this.notes) {
       notesToSend.add(n.copy());
     }
     other.mix(notesToSend);
@@ -115,7 +145,7 @@ public class MusicModel implements GenericMusicPiece {
   @Override
   public List<Note> getNotes() {
     List<Note> toReturn = new ArrayList<Note>();
-    for (Note n: this.notes) {
+    for (Note n : this.notes) {
       toReturn.add(n.copy());
     }
     return toReturn;
@@ -124,7 +154,7 @@ public class MusicModel implements GenericMusicPiece {
   @Override
   public List<Note> getNotes(int time) {
     List<Note> toReturn = new ArrayList<Note>();
-    for (Note n: this.notes) {
+    for (Note n : this.notes) {
       if (n.getStartTime() == time) {
         toReturn.add(n.copy());
       }
@@ -151,6 +181,11 @@ public class MusicModel implements GenericMusicPiece {
   }
 
   @Override
+  public void setTempo(int t) {
+    this.tempo = t;
+  }
+
+  @Override
   public void changeDuration(Note n, int b) {
     if (this.notes.contains(n)) {
       int index = this.notes.indexOf(n);
@@ -163,6 +198,56 @@ public class MusicModel implements GenericMusicPiece {
     if (this.notes.contains(n)) {
       int index = this.notes.indexOf(n);
       this.notes.get(index).changeStart(b);
+    }
+  }
+
+  public static final class Builder implements CompositionBuilder<GenericMusicPiece> {
+
+    private GenericMusicPiece model;
+
+    /**
+     * Makes a new model
+     */
+    public Builder() {
+      this.model = new MusicModel();
+    }
+
+    /**
+     * Makes a builder with a given model
+     * @param m the given model
+     */
+    public Builder(GenericMusicPiece m) {
+      this.model = m;
+    }
+
+    /**
+     * Builds a model from a list of notes
+     * @param list notes to build a model from
+     */
+    public Builder(List<Note> list) {
+      this.model = new MusicModel(list);
+    }
+
+    @Override
+    public GenericMusicPiece build() {
+      return this.model;
+    }
+
+    @Override
+    public CompositionBuilder<GenericMusicPiece> setTempo(int tempo) {
+      this.model.setTempo(tempo);
+      return this;
+    }
+
+    @Override
+    public CompositionBuilder<GenericMusicPiece> addNote(int start, int end, int instrument,
+                                                         int pitch, int volume) {
+      Pitch p = Pitch.values()[pitch % Pitch.values().length];
+      int octave = (pitch / 12) + 1;
+      int duration = end - start;
+      Note toAdd = new Note(p, octave, duration, start, instrument, volume);
+      this.model.addNote(toAdd);
+      return this;
     }
   }
 }

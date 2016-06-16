@@ -5,11 +5,13 @@ import java.awt.event.MouseListener; // Possibly of interest for handling mouse 
 
 import javax.swing.*;
 
+import cs3500.music.controller.IMusicController;
+
 /**
  * A skeleton Frame (i.e., a window) in Swing
  */
-public class GuiViewFrame extends javax.swing.JFrame // implements YourViewInterfaceHere {
-{
+public class GuiViewFrame extends javax.swing.JFrame  implements IMusicView {
+
   private final JPanel displayPanel; // You may want to refine this to a subtype of JPanel
 
   /**
@@ -32,4 +34,8 @@ public class GuiViewFrame extends javax.swing.JFrame // implements YourViewInter
     return new Dimension(100, 100);
   }
 
+  @Override
+  public void play(IMusicController piece) {
+
+  }
 }
