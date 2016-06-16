@@ -5,6 +5,7 @@ import java.util.List;
 import cs3500.music.model.GenericMusicPiece;
 import cs3500.music.model.MusicModel;
 import cs3500.music.model.Note;
+import cs3500.music.view.IMusicView;
 
 /**
  * Controller for a music model.
@@ -16,6 +17,9 @@ public class MusicController implements IMusicController {
   public MusicController() {
     this.model = new MusicModel();
   }
+
+  @Override
+  public void play(GenericMusicPiece piece, IMusicView view) { view.play(piece); }
 
   @Override
   public void append(GenericMusicPiece m) {

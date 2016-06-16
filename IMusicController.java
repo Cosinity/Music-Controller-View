@@ -4,11 +4,18 @@ import java.util.List;
 
 import cs3500.music.model.GenericMusicPiece;
 import cs3500.music.model.Note;
+import cs3500.music.view.IMusicView;
 
 /**
- * Created by Nick on 2016-06-15.
+ * Represents the functionality of a MusicPlayer controller
  */
 public interface IMusicController {
+  /**
+   * Plays the given piece in the manner of the given view (e.g. displays it to a GUI, plays
+   * the notes' audio, etc.)
+   */
+  void play(GenericMusicPiece piece, IMusicView view);
+
   /**
    * Appends a music piece to the controller's music piece.
    */
@@ -77,4 +84,8 @@ public interface IMusicController {
    * @param s the amount of beats to be added/subtracted from the note's duration
    */
   void changeDuration(Note n, int s);
+
+  /**
+   *
+   */
 }
