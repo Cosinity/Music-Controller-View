@@ -19,7 +19,7 @@ public class MusicController implements IMusicController {
   }
 
   @Override
-  public void play(GenericMusicPiece piece, IMusicView view) { view.play(piece); }
+  public void play(IMusicView view) { view.play(this); }
 
   @Override
   public void append(GenericMusicPiece m) {
