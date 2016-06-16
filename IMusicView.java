@@ -1,7 +1,6 @@
 package cs3500.music.view;
 
 import cs3500.music.controller.IMusicController;
-import cs3500.music.model.GenericMusicPiece;
 
 /**
  * Represents the functionality of a MusicPlayer view

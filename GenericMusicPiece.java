@@ -57,13 +57,6 @@ public interface GenericMusicPiece {
   void toggleFlat();
 
   /**
-   * Print out the piece in ASCII form
-   *
-   * @return the piece written out in ASCII form
-   */
-  String print();
-
-  /**
    * Returns the full list of notes (cloned, of course)
    * @return the full list of notes in the song
    */
@@ -103,4 +96,10 @@ public interface GenericMusicPiece {
    * @param s the amount of semitones to be transposed by
    */
   void changePitch(Note n, int s);
+
+  /**
+   * Returns whether the piece is currently flat
+   * @return whether thepiece is currently flat
+   */
+  boolean isFlat();
 }

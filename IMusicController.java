@@ -10,6 +10,7 @@ import cs3500.music.view.IMusicView;
  * Represents the functionality of a MusicPlayer controller
  */
 public interface IMusicController {
+
   /**
    * Plays the given piece in the manner of the given view (e.g. displays it to a GUI, plays
    * the notes' audio, etc.)
@@ -86,6 +87,7 @@ public interface IMusicController {
   void changeDuration(Note n, int s);
 
   /**
-   *
+   * Returns whether the piece is currently flat
    */
+  boolean isFlat();
 }

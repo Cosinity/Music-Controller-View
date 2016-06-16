@@ -18,8 +18,14 @@ public class MusicController implements IMusicController {
     this.model = new MusicModel();
   }
 
+  public MusicController(GenericMusicPiece piece) {
+    this.model = piece;
+  }
+
   @Override
-  public void play(IMusicView view) { view.play(this); }
+  public void play(IMusicView view) {
+    view.play(this);
+  }
 
   @Override
   public void append(GenericMusicPiece m) {
@@ -74,5 +80,10 @@ public class MusicController implements IMusicController {
   @Override
   public void changeDuration(Note n, int s) {
     this.model.changeDuration(n, s);
+  }
+
+  @Override
+  public boolean isFlat() {
+    return this.model.isFlat();
   }
 }
