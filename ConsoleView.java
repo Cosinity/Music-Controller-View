@@ -8,7 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import cs3500.music.controller.IMusicController;
@@ -29,18 +31,8 @@ public class ConsoleView implements IMusicView {
 
   @Override
   public void play(IMusicController controller) {
-
     this.curController = controller;
-    this.notes = curController.getNotes();
-
-    if (this.notes.isEmpty()) {
-      return;
-    }
-
-    // Create a header
-    StringBuilder output = new StringBuilder(makeHeader() + "\n");
-    String[] rows = new String[this.totalLength + 1];
-
+    this.notes = curController.getNotes().stream().map(Note::copy).collect(Collectors.toList());
     Note highest = this.getHighestNote();
     Note lowest = this.getLowestNote();
     int hiOct = highest.getOctave();
@@ -48,7 +40,21 @@ public class ConsoleView implements IMusicView {
     Pitch lowestPitch = lowest.getPitch();
     Pitch highestPitch = highest.getPitch();
 
-    this.totalLength = highest.getStartTime() + highest.getDuration() - 1;
+    this.totalLength = -1;
+
+    for (Note n : this.notes) {
+      if (n.getStartTime() + n.getDuration() - 1 > totalLength) {
+        totalLength = n.getStartTime() + n.getDuration() - 1;
+      }
+    }
+
+    if (this.notes.isEmpty()) {
+      throw new IllegalStateException("No notes in composition!");
+    }
+
+    // Create a header
+    StringBuilder output = new StringBuilder(makeHeader() + "\n");
+    String[] rows = new String[this.totalLength + 1];
 
     // Sort list of notes
     Collections.sort(this.notes);
@@ -129,12 +135,6 @@ public class ConsoleView implements IMusicView {
     }
   }
 
-  /**
-   * Adds all the notes from the octave to the rows
-   * @param octave the octave to add to
-   * @param rows the array containing the rows that will be output
-   * @param pred the predicate used to select rows - filled with a lambda
-   */
   private void addOctave(Queue<Note> octave, String[] rows, Predicate<Pitch> pred) {
     if (octave.isEmpty()) {
       return;
@@ -142,9 +142,15 @@ public class ConsoleView implements IMusicView {
     Arrays.stream(Pitch.values()).filter(pred).forEach(p -> {
       List<Note> currentNotes = new ArrayList<Note>();
       for (int i = 0; i < rows.length; i++) {
-        while (!octave.isEmpty() && octave.peek().getStartTime() == i
+        /* while (!octave.isEmpty() && octave.peek().getStartTime() == i
                 && octave.peek().getPitch().equals(p)) {
           currentNotes.add(octave.poll());
+        } */
+
+        for (Note n : octave) {
+          if (n.getStartTime() == i && n.getPitch().equals(p)) {
+            currentNotes.add(n);
+          }
         }
 
         if (currentNotes.isEmpty()) {
@@ -155,7 +161,7 @@ public class ConsoleView implements IMusicView {
           rows[i] += "  |  ";
         }
         final int curIdx = i;
-        currentNotes.removeIf(n -> (n.getStartTime() + n.getDuration() - 1) == curIdx);
+        currentNotes.removeIf(n -> (n.getStartTime() + n.getDuration() - 1) <= curIdx);
       }
     });
   }
@@ -191,10 +197,6 @@ public class ConsoleView implements IMusicView {
     return headerNotes;
   }
 
-  /**
-   * Returns the lowest note in the note list
-   * @return the lowest note in the note list
-   */
   private Note getLowestNote() {
     // initialize as highest note
     Note low = this.notes.get(0);
@@ -209,10 +211,6 @@ public class ConsoleView implements IMusicView {
     return low;
   }
 
-  /**
-   * Returns the highest note in the note list
-   * @return the highest note in the note list
-   */
   private Note getHighestNote() {
     // initialize as lowest possible note
     Note high = this.notes.get(this.notes.size() - 1);

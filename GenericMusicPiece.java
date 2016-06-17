@@ -108,4 +108,9 @@ public interface GenericMusicPiece {
    * @param t the tempo the piece will be set to
    */
   void setTempo(int t);
+
+  /**
+   * Fetches the tempo of the piece
+   */
+  long getTempo();
 }

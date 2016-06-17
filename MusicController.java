@@ -86,4 +86,9 @@ public class MusicController implements IMusicController {
   public boolean isFlat() {
     return this.model.isFlat();
   }
+
+  @Override
+  public long getTempo() {
+    return this.model.getTempo();
+  }
 }

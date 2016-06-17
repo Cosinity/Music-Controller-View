@@ -90,4 +90,9 @@ public interface IMusicController {
    * Returns whether the piece is currently flat
    */
   boolean isFlat();
+
+  /**
+   * Fetches the piece's tempo
+   */
+  long getTempo();
 }

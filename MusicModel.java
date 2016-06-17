@@ -201,6 +201,14 @@ public class MusicModel implements GenericMusicPiece {
     }
   }
 
+  @Override
+  public long getTempo() {
+    return this.tempo;
+  }
+
+  /**
+   * Music Model Builder
+   */
   public static final class Builder implements CompositionBuilder<GenericMusicPiece> {
 
     private GenericMusicPiece model;
@@ -243,8 +251,8 @@ public class MusicModel implements GenericMusicPiece {
     public CompositionBuilder<GenericMusicPiece> addNote(int start, int end, int instrument,
                                                          int pitch, int volume) {
       Pitch p = Pitch.values()[pitch % Pitch.values().length];
-      int octave = (pitch / 12) + 1;
-      int duration = end - start;
+      int octave = (pitch / Pitch.values().length);
+      int duration = end - start + 1;
       Note toAdd = new Note(p, octave, duration, start, instrument, volume);
       this.model.addNote(toAdd);
       return this;

@@ -73,7 +73,8 @@ public class Note implements Comparable<Note> {
    * @return a copy of this note
    */
   public Note copy() {
-    return new Note(this.pitch, this.octave, this.duration, this.startTime);
+    return new Note(this.pitch, this.octave, this.duration,
+            this.startTime, this.instrument, this.volume);
   }
 
 
