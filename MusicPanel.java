@@ -43,24 +43,67 @@ public class MusicPanel extends JPanel implements Scrollable {
 
   @Override
   public int getHeight() {
-    return preferredHeight() + (NOTE_SIZE * 2);
+    return preferredHeight() + (NOTE_SIZE * 3);
   }
 
   @Override
-  public void paintComponent(Graphics g){
+  public void paintComponent(Graphics g) {
+    int vertOffset = NOTE_SIZE;
+    int horiOffset = NOTE_SIZE * 2;
     super.paintComponent(g);
     List<Note> notes = piece.getNotes();
     int height = preferredHeight();
+
+    /*
+     * Draw the note names and staff lines
+     */
+    Note high = highNote.copy();
+    int h = 1;
+    g.drawLine(horiOffset, (h - 1) * NOTE_SIZE + vertOffset,
+            this.getWidth(), (h - 1) * NOTE_SIZE + vertOffset);
+    while (!(high.getPitch().equals(lowNote.getPitch()) &&
+            high.getOctave() == lowNote.getOctave())) {
+      g.drawString(high.getPitch().toString() + high.getOctave(), 0,
+              h * NOTE_SIZE - (NOTE_SIZE / 3) + vertOffset);
+      g.drawLine(horiOffset, h * NOTE_SIZE + vertOffset, this.getWidth(), h * NOTE_SIZE + vertOffset);
+      h++;
+      high.transpose(-1);
+    }
+    g.drawString(lowNote.getPitch().toString() + lowNote.getOctave(), 0,
+            h * NOTE_SIZE - (NOTE_SIZE / 3) + vertOffset);
+    g.drawLine(horiOffset, h * NOTE_SIZE + vertOffset,
+            this.getWidth(), h * NOTE_SIZE + vertOffset);
+
+    /*
+     * Draw the notes
+     */
     for (Note n : notes) {
       int noteHeight = height - (notePosition(n) * NOTE_SIZE);
-      g.setColor(Color.BLACK);
-      g.fillRect(n.getStartTime() * NOTE_SIZE, noteHeight, NOTE_SIZE, NOTE_SIZE);
+      g.setColor(Color.DARK_GRAY);
+      g.fillRect(n.getStartTime() * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset, NOTE_SIZE,
+              NOTE_SIZE - 1);
       for (int i = n.getStartTime() + 1; i < n.getStartTime() + n.getDuration(); i++) {
-        g.setColor(Color.GREEN);
-        g.fillRect(i * NOTE_SIZE, noteHeight, NOTE_SIZE, NOTE_SIZE);
+        g.setColor(Color.GRAY);
+        g.fillRect(i * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset,
+                NOTE_SIZE, NOTE_SIZE - 1);
       }
     }
     this.setSize(this.getWidth(), height);
+
+    /*
+     * Draw the beat numbers and bar lines
+     */
+    for (int i = 0; i < this.getWidth(); i++) {
+      if (i % 16 == 0) {
+        g.setColor(Color.BLACK);
+        g.drawString(String.valueOf(i), i * NOTE_SIZE + horiOffset, vertOffset);
+        g.drawLine((i * NOTE_SIZE) + horiOffset, vertOffset, (i * NOTE_SIZE) + horiOffset,
+                this.preferredHeight() + vertOffset);
+      }else if (i % 4 == 0) {
+        g.drawLine((i * NOTE_SIZE) + horiOffset, vertOffset, (i * NOTE_SIZE) + horiOffset,
+                this.preferredHeight() + vertOffset);
+      }
+    }
   }
 
   public void setPiece(IMusicController piece) {
