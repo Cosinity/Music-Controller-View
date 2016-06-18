@@ -3,9 +3,10 @@ package cs3500.music.model;
 import java.util.List;
 
 /**
- * Interface for a general representation of a musical composition/piece
+ * Interface for a general representation of a musical composition/piece paramaterized over the
+ * type of note in the piece
  */
-public interface GenericMusicPiece {
+public interface GenericMusicPiece<T> {
 
   /**
    * Adds all the notes from this piece to the other by passing it this piece's note list.
@@ -19,7 +20,7 @@ public interface GenericMusicPiece {
    * Adds all the notes from a given list of notes
    * @param other The notes that are to be added to this piece.
    */
-  void append(List<Note> other);
+  void append(List<T> other);
 
   /**
    * Adds all the notes from this piece to the other by passing it this piece's note list.
@@ -31,7 +32,7 @@ public interface GenericMusicPiece {
    * Adds all the notes in an arraylist to this piece's list of notes
    * @param other The notes that are to be added to this piece
    */
-  void mix(List<Note> other);
+  void mix(List<T> other);
 
   /**
    * Transposes the piece up or down the given amount of semitones
@@ -43,13 +44,13 @@ public interface GenericMusicPiece {
    * Add a note to the music piece
    * @param toAdd the note to be added
    */
-  void addNote(Note toAdd);
+  void addNote(T toAdd);
 
   /**
    * Remove a specific note from the piece. If the note doesn't exist, the method does nothing.
    * @param n The note to remove from the piece
    */
-  void remove(Note n);
+  void remove(T n);
 
   /**
    * Toggle piece's notes between being rendered as sharp and flat
@@ -80,14 +81,14 @@ public interface GenericMusicPiece {
    * @param n the note to change the startTime of
    * @param b the amount of beats to change the notes start time by
    */
-  void changeStart(Note n, int b);
+  void changeStart(T n, int b);
 
   /**
    * Changes the duration of a specific note
    * @param n the note to change the duration of
    * @param b the amount of beats to change the note's duration by
    */
-  void changeDuration(Note n, int b);
+  void changeDuration(T n, int b);
 
 
   /**
@@ -95,7 +96,7 @@ public interface GenericMusicPiece {
    * @param n the note to be edited
    * @param s the amount of semitones to be transposed by
    */
-  void changePitch(Note n, int s);
+  void changePitch(T n, int s);
 
   /**
    * Returns whether the piece is currently flat

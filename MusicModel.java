@@ -16,7 +16,7 @@ import cs3500.music.util.CompositionBuilder;
 /**
  * A Model representing a musical composition.
  */
-public class MusicModel implements GenericMusicPiece {
+public class MusicModel implements GenericMusicPiece<Note> {
   /**
    * List for keeping the notes that are in the composition.
    */

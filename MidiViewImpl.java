@@ -11,7 +11,7 @@ import cs3500.music.model.Pitch;
 /**
  * A skeleton for MIDI playback
  */
-public class MidiViewImpl implements IMusicView {
+public class MidiViewImpl implements IMusicView<Note> {
 
   private final Sequencer sequencer;
 
@@ -51,8 +51,7 @@ public class MidiViewImpl implements IMusicView {
           MidiEvent offEvent = new MidiEvent(off,
                   (n.getStartTime() + n.getDuration() - 1));
           track.add(offEvent);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
           e.printStackTrace();
         }
       });
@@ -72,8 +71,7 @@ public class MidiViewImpl implements IMusicView {
       this.sequencer.stop();
       this.sequencer.close();
 
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }

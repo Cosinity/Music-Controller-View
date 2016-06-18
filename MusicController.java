@@ -10,7 +10,7 @@ import cs3500.music.view.IMusicView;
 /**
  * Controller for a music model.
  */
-public class MusicController implements IMusicController {
+public class MusicController implements IMusicController<Note> {
 
   private GenericMusicPiece model;
 

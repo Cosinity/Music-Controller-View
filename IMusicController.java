@@ -9,7 +9,7 @@ import cs3500.music.view.IMusicView;
 /**
  * Represents the functionality of a MusicPlayer controller
  */
-public interface IMusicController {
+public interface IMusicController<T> {
 
   /**
    * Plays the given piece in the manner of the given view (e.g. displays it to a GUI, plays
@@ -20,25 +20,25 @@ public interface IMusicController {
   /**
    * Appends a music piece to the controller's music piece.
    */
-  void append(GenericMusicPiece m);
+  void append(GenericMusicPiece<T> m);
 
   /**
    * Appends a music piece to the controller's music piece.
    * @param m the music piece
    */
-  void mix(GenericMusicPiece m);
+  void mix(GenericMusicPiece<T> m);
 
   /**
    * Add a note to the controller's music piece.
    * @param n the note to be added
    */
-  void addNote(Note n);
+  void addNote(T n);
 
   /**
    * Remove a note from the controller's music piece.
    * @param n the note to be removed
    */
-  void removeNote(Note n);
+  void removeNote(T n);
 
   /**
    * Fetch all the notes in the piece
@@ -58,7 +58,7 @@ public interface IMusicController {
    * @param n the note to be edited
    * @param s the amount of semitones to be added/subtracted from the note's pitch
    */
-  void changePitch(Note n, int s);
+  void changePitch(T n, int s);
 
   /**
    * Change the entire piece's pitch by this many semitones
@@ -71,7 +71,7 @@ public interface IMusicController {
    * @param n the note to be edited
    * @param s the amount of beats to be added/subtracted from the note's start time
    */
-  void changeStart(Note n, int s);
+  void changeStart(T n, int s);
 
   /**
    * Change the piece's start time by this many beats
@@ -84,7 +84,7 @@ public interface IMusicController {
    * @param n the note to be edited
    * @param s the amount of beats to be added/subtracted from the note's duration
    */
-  void changeDuration(Note n, int s);
+  void changeDuration(T n, int s);
 
   /**
    * Returns whether the piece is currently flat

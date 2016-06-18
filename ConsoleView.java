@@ -22,7 +22,7 @@ import cs3500.music.model.Pitch;
 /**
  * Text-based representation of a musical composition
  */
-public class ConsoleView implements IMusicView {
+public class ConsoleView implements IMusicView<Note> {
 
 
   List<Note> notes;
