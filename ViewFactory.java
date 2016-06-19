@@ -15,13 +15,16 @@ public class ViewFactory {
     this.model = model;
   }
 
-  public IMusicView make(String typeOfView) {
-    switch (typeOfView.toLowerCase()) {
-      case "visual" : return new GuiViewFrame();
-      case "midi": return new MidiViewImpl();
-      case "console": return new ConsoleView();
-      default:
-        throw new IllegalArgumentException("Invalid display type!");
+  public static IMusicView make(String typeOfView) {
+    if (typeOfView.equals("g") || typeOfView.equals("gui") || typeOfView.equals("GUI")) {
+      return new GuiViewFrame();
+    } else if (typeOfView.equals("m") || typeOfView.equals("midi") || typeOfView.equals("MIDI")) {
+      return new MidiViewImpl();
+    } else if (typeOfView.equals("c") || typeOfView.equals("console") || typeOfView.equals
+            ("Console")) {
+      return new ConsoleView();
+    } else {
+      throw new IllegalArgumentException("No such view");
     }
   }
 }
