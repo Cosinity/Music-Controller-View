@@ -14,26 +14,29 @@ import cs3500.music.model.Pitch;
 public class MidiViewImpl implements IMusicView<Note> {
 
   private final Sequencer sequencer;
+  private Sequence sequence;
 
   public MidiViewImpl() {
     Sequencer seq = null;
 
     try {
       seq = MidiSystem.getSequencer();
-    } catch (MidiUnavailableException e) {
+      this.sequence = new Sequence(Sequence.PPQ, 1);
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
     this.sequencer = seq;
+  }
 
-
+  public MidiViewImpl(Sequence sequence) {
+    this();
+    this.sequence = sequence;
   }
 
   @Override
   public void play(IMusicController piece) {
-    Sequence sequence;
     try {
-      sequence = new Sequence(Sequence.PPQ, 1);
       this.sequencer.setTempoInMPQ(piece.getTempo());
       Track track = sequence.createTrack();
       this.sequencer.open();
@@ -49,7 +52,7 @@ public class MidiViewImpl implements IMusicView<Note> {
           ShortMessage off = new ShortMessage(ShortMessage.NOTE_OFF,
                   n.getInstrument(), key, n.getVolume());
           MidiEvent offEvent = new MidiEvent(off,
-                  (n.getStartTime() + n.getDuration() - 1));
+                  (n.getStartTime() + n.getDuration()));
           track.add(offEvent);
         } catch (Exception e) {
           e.printStackTrace();
@@ -66,7 +69,7 @@ public class MidiViewImpl implements IMusicView<Note> {
         }
       }
 
-      Thread.sleep(totalLength * piece.getTempo() / 1000);
+      Thread.sleep(this.sequence.getTickLength() * piece.getTempo() / 1000);
 
       this.sequencer.stop();
       this.sequencer.close();
