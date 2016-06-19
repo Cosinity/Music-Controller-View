@@ -110,6 +110,7 @@ public class MidiViewImplTest {
     this.myControl = new MusicController(myPiece);
     this.maryControl = new MusicController(maryPiece);
     this.playMidi = new MidiViewImpl(seq);
+    SequenceMock.log = new StringBuilder();
   }
 
   @Test
