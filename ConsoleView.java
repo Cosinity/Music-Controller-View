@@ -1,13 +1,17 @@
 package cs3500.music.view;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -23,27 +27,38 @@ import cs3500.music.model.Pitch;
  * Text-based representation of a musical composition
  */
 public class ConsoleView implements IMusicView<Note> {
-
-
-  /**
-   * The notes of the passed controller's model.
-   */
+  private OutputStream out;
   private List<Note> notes;
-  /**
-   * The total length of the passed notes.
-   * Accounts for the length of the sidebar and amount of rows.
-   */
   private int totalLength;
-  /**
-   * Keeps track of the current controller so that the helper methods can all access it
-   * without need to constantly send it.
-   */
   private IMusicController curController;
+
+  /**
+   * Default constructor- sets the output to print to the console
+   */
+  public ConsoleView() {
+    this.out = System.out;
+    this.notes = new ArrayList<Note>();
+    this.totalLength = 0;
+    this.curController = null;
+  }
+
+  /**
+   * Sets the output to whatever output stream is provided
+   */
+  public ConsoleView(OutputStream out) {
+    this.out = out;
+    this.notes = new ArrayList<Note>();
+    this.totalLength = 0;
+    this.curController = null;
+  }
 
   @Override
   public void play(IMusicController controller) {
     this.curController = controller;
     List<Note> tempNotes = controller.getNotes();
+    if (tempNotes.isEmpty()) {
+      return;
+    }
     for (int i = 0; i < tempNotes.size(); i++) {
       notes.add(tempNotes.get(i).copy());
     }
@@ -62,12 +77,12 @@ public class ConsoleView implements IMusicView<Note> {
       }
     }
 
-    if (this.notes.isEmpty()) {
-      throw new IllegalStateException("No notes in composition!");
-    }
-
     // Create a header
-    StringBuilder output = new StringBuilder(makeHeader() + "\n");
+    try {
+      out.write((makeHeader() + "\n").getBytes());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     String[] rows = new String[this.totalLength + 1];
 
     // Sort list of notes
@@ -98,9 +113,13 @@ public class ConsoleView implements IMusicView<Note> {
     midOcts.values().forEach(o -> this.addOctave(o, rows, p -> p != null));
     this.addOctave(lastOct, rows, p -> p.compareTo(highestPitch) <= 0);
 
-    Arrays.stream(rows).forEach(r -> output.append(r + "\n"));
-
-    System.out.println(output.toString());
+    Arrays.stream(rows).forEach(r -> {
+      try {
+        out.write((r + "\n").getBytes());
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    });
   }
 
   /**

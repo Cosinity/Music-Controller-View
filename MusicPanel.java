@@ -12,11 +12,11 @@ import cs3500.music.model.Note;
 /**
  * Displays a musical piece
  */
-public class MusicPanel extends JPanel implements Scrollable {
+public class MusicPanel extends JPanel {
   private IMusicController piece;
   private final int NOTE_SIZE = 20;  // How large the notes should be when displayed, in pixels
-  Note lowNote;
-  Note highNote;
+  private Note lowNote;
+  private Note highNote;
 
   public MusicPanel() {
     super();
@@ -38,70 +38,73 @@ public class MusicPanel extends JPanel implements Scrollable {
         highNote = n;
       }
     }
-    this.setSize(NOTE_SIZE * 64, preferredHeight());
+    this.setSize(NOTE_SIZE * 64, staffHeight());
   }
 
   @Override
   public int getHeight() {
-    return preferredHeight() + (NOTE_SIZE * 3);
+    return staffHeight() + (NOTE_SIZE * 3);
   }
 
   @Override
   public void paintComponent(Graphics g) {
-    int vertOffset = NOTE_SIZE;
-    int horiOffset = NOTE_SIZE * 2;
-    super.paintComponent(g);
-    List<Note> notes = piece.getNotes();
-    int height = preferredHeight();
+    if (highNote == null || lowNote == null) {
+      // The panel has not been initialized yet, do nothing
+    } else {
+      int vertOffset = NOTE_SIZE;
+      int horiOffset = NOTE_SIZE * 2;
+      List<Note> notes = piece.getNotes();
+      int height = staffHeight();
 
     /*
      * Draw the note names and staff lines
      */
-    Note high = highNote.copy();
-    int h = 1;
-    g.drawLine(horiOffset, (h - 1) * NOTE_SIZE + vertOffset,
-            this.getWidth(), (h - 1) * NOTE_SIZE + vertOffset);
-    while (!(high.getPitch().equals(lowNote.getPitch()) &&
-            high.getOctave() == lowNote.getOctave())) {
-      g.drawString(high.getPitch().toString() + high.getOctave(), 0,
+      Note high = highNote.copy();
+      int h = 1;
+      g.drawLine(horiOffset, (h - 1) * NOTE_SIZE + vertOffset,
+              this.getWidth(), (h - 1) * NOTE_SIZE + vertOffset);
+      while (!(high.getPitch().equals(lowNote.getPitch()) &&
+              high.getOctave() == lowNote.getOctave())) {
+        g.drawString(high.getPitch().toString() + high.getOctave(), 0,
+                h * NOTE_SIZE - (NOTE_SIZE / 3) + vertOffset);
+        g.drawLine(horiOffset, h * NOTE_SIZE + vertOffset, this.getWidth(), h * NOTE_SIZE + vertOffset);
+        h++;
+        high.transpose(-1);
+      }
+      g.drawString(lowNote.getPitch().toString() + lowNote.getOctave(), 0,
               h * NOTE_SIZE - (NOTE_SIZE / 3) + vertOffset);
-      g.drawLine(horiOffset, h * NOTE_SIZE + vertOffset, this.getWidth(), h * NOTE_SIZE + vertOffset);
-      h++;
-      high.transpose(-1);
-    }
-    g.drawString(lowNote.getPitch().toString() + lowNote.getOctave(), 0,
-            h * NOTE_SIZE - (NOTE_SIZE / 3) + vertOffset);
-    g.drawLine(horiOffset, h * NOTE_SIZE + vertOffset,
-            this.getWidth(), h * NOTE_SIZE + vertOffset);
+      g.drawLine(horiOffset, h * NOTE_SIZE + vertOffset,
+              this.getWidth(), h * NOTE_SIZE + vertOffset);
 
     /*
      * Draw the notes
      */
-    for (Note n : notes) {
-      int noteHeight = height - (notePosition(n) * NOTE_SIZE);
-      g.setColor(Color.DARK_GRAY);
-      g.fillRect(n.getStartTime() * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset, NOTE_SIZE,
-              NOTE_SIZE - 1);
-      for (int i = n.getStartTime() + 1; i < n.getStartTime() + n.getDuration(); i++) {
-        g.setColor(Color.GRAY);
-        g.fillRect(i * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset,
-                NOTE_SIZE, NOTE_SIZE - 1);
+      for (Note n : notes) {
+        int noteHeight = height - (notePosition(n) * NOTE_SIZE);
+        g.setColor(Color.DARK_GRAY);
+        g.fillRect(n.getStartTime() * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset, NOTE_SIZE,
+                NOTE_SIZE - 1);
+        for (int i = n.getStartTime() + 1; i < n.getStartTime() + n.getDuration(); i++) {
+          g.setColor(Color.GRAY);
+          g.fillRect(i * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset,
+                  NOTE_SIZE, NOTE_SIZE - 1);
+        }
       }
-    }
-    this.setSize(this.getWidth(), height);
+      this.setSize(this.getWidth(), height);
 
     /*
      * Draw the beat numbers and bar lines
      */
-    for (int i = 0; i < this.getWidth(); i++) {
-      if (i % 16 == 0) {
-        g.setColor(Color.BLACK);
-        g.drawString(String.valueOf(i), i * NOTE_SIZE + horiOffset, vertOffset);
-        g.drawLine((i * NOTE_SIZE) + horiOffset, vertOffset, (i * NOTE_SIZE) + horiOffset,
-                this.preferredHeight() + vertOffset);
-      }else if (i % 4 == 0) {
-        g.drawLine((i * NOTE_SIZE) + horiOffset, vertOffset, (i * NOTE_SIZE) + horiOffset,
-                this.preferredHeight() + vertOffset);
+      for (int i = 0; i < this.getWidth(); i++) {
+        if (i % 16 == 0) {
+          g.setColor(Color.BLACK);
+          g.drawString(String.valueOf(i), i * NOTE_SIZE + horiOffset, vertOffset - 1);
+          g.drawLine((i * NOTE_SIZE) + horiOffset, vertOffset, (i * NOTE_SIZE) + horiOffset,
+                  this.staffHeight() + vertOffset);
+        } else if (i % 4 == 0) {
+          g.drawLine((i * NOTE_SIZE) + horiOffset, vertOffset, (i * NOTE_SIZE) + horiOffset,
+                  this.staffHeight() + vertOffset);
+        }
       }
     }
   }
@@ -121,45 +124,12 @@ public class MusicPanel extends JPanel implements Scrollable {
     }
   }
 
-  @Override
-  public Dimension getPreferredScrollableViewportSize() {
-    return new Dimension(NOTE_SIZE * 64, preferredHeight());
-  }
-
-  @Override
-  public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-    if (orientation == SwingConstants.VERTICAL) {
-      return 0;
-    } else {
-      return NOTE_SIZE;
-    }
-  }
-
-  @Override
-  public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
-    if (orientation == SwingConstants.VERTICAL) {
-      return 0;
-    } else {
-      return NOTE_SIZE;
-    }
-  }
-
-  @Override
-  public boolean getScrollableTracksViewportWidth() {
-    return false;
-  }
-
-  @Override
-  public boolean getScrollableTracksViewportHeight() {
-    return true;
-  }
-
   /**
    * Gets the height required to display all notes in this piece
    *
    * @return the height required to display all notes in this piece
    */
-  private int preferredHeight() {
+  private int staffHeight() {
     List<Note> notes = piece.getNotes();
     if (notes.isEmpty()) {
       return NOTE_SIZE;
