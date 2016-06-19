@@ -25,14 +25,28 @@ import cs3500.music.model.Pitch;
 public class ConsoleView implements IMusicView<Note> {
 
 
-  List<Note> notes;
-  int totalLength;
-  IMusicController curController;
+  /**
+   * The notes of the passed controller's model.
+   */
+  private List<Note> notes;
+  /**
+   * The total length of the passed notes.
+   * Accounts for the length of the sidebar and amount of rows.
+   */
+  private int totalLength;
+  /**
+   * Keeps track of the current controller so that the helper methods can all access it
+   * without need to constantly send it.
+   */
+  private IMusicController curController;
 
   @Override
   public void play(IMusicController controller) {
     this.curController = controller;
-    this.notes = curController.getNotes().stream().map(Note::copy).collect(Collectors.toList());
+    List<Note> tempNotes = controller.getNotes();
+    for (int i = 0; i < tempNotes.size(); i++) {
+      notes.add(tempNotes.get(i).copy());
+    }
     Note highest = this.getHighestNote();
     Note lowest = this.getLowestNote();
     int hiOct = highest.getOctave();
