@@ -16,12 +16,12 @@ public class ViewFactory {
   }
 
   public static IMusicView make(String typeOfView) {
-    if (typeOfView.equals("g") || typeOfView.equals("gui") || typeOfView.equals("GUI")) {
+    if (typeOfView.toLowerCase().equals("g") || typeOfView.toLowerCase().equals("gui")
+            || typeOfView.toLowerCase().equals("visual")) {
       return new GuiViewFrame();
-    } else if (typeOfView.equals("m") || typeOfView.equals("midi") || typeOfView.equals("MIDI")) {
+    } else if (typeOfView.toLowerCase().equals("m") || typeOfView.toLowerCase().equals("midi")) {
       return new MidiViewImpl();
-    } else if (typeOfView.equals("c") || typeOfView.equals("console") || typeOfView.equals
-            ("Console")) {
+    } else if (typeOfView.toLowerCase().equals("c") || typeOfView.toLowerCase().equals("console")) {
       return new ConsoleView();
     } else {
       throw new IllegalArgumentException("No such view");
