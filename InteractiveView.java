@@ -5,7 +5,7 @@ import cs3500.music.model.Note;
 /**
  * Represents the functionality of a view for MusicPlayer with interactability
  */
-public interface InteractableView<T> extends IMusicView<T> {
+public interface InteractiveView<T> extends IMusicView<T> {
   // Note-specific methods
   /**
    * Selects the given note. Specifically, puts a colored outline around the note and updates the
