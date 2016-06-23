@@ -1,3 +1,4 @@
+
 package cs3500.music.controller;
 
 import java.util.List;
@@ -24,30 +25,35 @@ public interface IMusicController<T> {
 
   /**
    * Appends a music piece to the controller's music piece.
+   *
    * @param m the music piece
    */
   void mix(GenericMusicPiece<T> m);
 
   /**
    * Add a note to the controller's music piece.
+   *
    * @param n the note to be added
    */
   void addNote(T n);
 
   /**
    * Remove a note from the controller's music piece.
+   *
    * @param n the note to be removed
    */
   void removeNote(T n);
 
   /**
    * Fetch all the notes in the piece
+   *
    * @return the notes in the piece
    */
   List<Note> getNotes();
 
   /**
    * Fetch all the notes on a particular beat
+   *
    * @param b the beat which to check the currently playing notes on
    * @return the notes on that beat
    */
@@ -55,6 +61,7 @@ public interface IMusicController<T> {
 
   /**
    * Change a specific note's pitch by this many semitones
+   *
    * @param n the note to be edited
    * @param s the amount of semitones to be added/subtracted from the note's pitch
    */
@@ -62,12 +69,14 @@ public interface IMusicController<T> {
 
   /**
    * Change the entire piece's pitch by this many semitones
+   *
    * @param s the amount of semitones to be added/subtracted from the piece's pitches
    */
   void transpose(int s);
 
   /**
    * Change a specific note's start time by this many beats
+   *
    * @param n the note to be edited
    * @param s the amount of beats to be added/subtracted from the note's start time
    */
@@ -75,12 +84,14 @@ public interface IMusicController<T> {
 
   /**
    * Change the piece's start time by this many beats
+   *
    * @param s the amount of beats to be added/subtracted from the piece's start time
    */
   void changeStart(int s);
 
   /**
    * Change a specific note's duration by this many beats
+   *
    * @param n the note to be edited
    * @param s the amount of beats to be added/subtracted from the note's duration
    */

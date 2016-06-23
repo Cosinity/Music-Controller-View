@@ -22,7 +22,6 @@ public class InteractiveMusicController extends MusicController {
   private InteractiveView<Note> view;
   private MouseClickListener mouseClickListener;
   private KeyboardListener keyboardListener;
-  private boolean isPlaying;
 
   public InteractiveMusicController() {
     super();
@@ -55,7 +54,7 @@ public class InteractiveMusicController extends MusicController {
     Map<Integer, Runnable> pressed = new HashMap<Integer, Runnable>();
     Map<Integer, Runnable> released = new HashMap<Integer, Runnable>();
 
-    typed.put(' ', () -> this.isPlaying = !this.isPlaying); // pause/unpause with spacebar
+    typed.put(' ', () -> this.view.togglePause(); // pause/unpause with spacebar
     pressed.put(KeyEvent.VK_HOME, () -> this.view.goToStart());
     pressed.put(KeyEvent.VK_END, () -> this.view.goToEnd());
 

@@ -67,4 +67,9 @@ public interface InteractiveView<T> extends IMusicView<T> {
    * Moves the view to the end of the song
    */
   void goToEnd();
+
+  /**
+   * Toggles whether the piece is currently playing
+   */
+  void togglePause();
 }

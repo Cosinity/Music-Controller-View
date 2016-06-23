@@ -22,6 +22,7 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   private KeyboardListener keyboardListener;
   private IMusicView<Note> guiView;
   private IMusicView<Note> midiView;
+  private Timer timer;
 
   public CompositeView() {
     super();
@@ -38,6 +39,13 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     this.pack();
     this.setVisible(true);
+    this.timer = new Timer(1, e -> {});
+    // TODO: 2016-06-23 CREATE THE ACTIONLISTENER FOR THE TIMER
+    // ActionListener Needs
+    // for current beat: timer asks midi view for current beat, passes it to the gui view,
+    // and that redraws everything
+    // gui view needs to keep track of the current beat for the red bar
+    this.timer.start();
   }
 
   /**
@@ -150,5 +158,15 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     this.staffPanel.setPiece(piece);
     this.staffPanel.setPreferredSize(new Dimension(staffPanel.getWidth(), staffPanel.getHeight()));
     this.repaint();
+  }
+
+  @Override
+  public void togglePause() {
+    if (this.timer.isRunning()) {
+      this.timer.stop();
+    }
+    else {
+      this.timer.start();
+    }
   }
 }
