@@ -14,47 +14,41 @@ import cs3500.music.model.Note;
  */
 public class MusicPanel extends JPanel {
   private IMusicController piece;
-  private final int NOTE_SIZE = 20;  // How large the notes should be when displayed, in pixels
+  // I made this field public because it is useful for other classes to have access to it, and
+  // it is final so it's safe
+  public final int NOTE_SIZE = 20;  // How large the notes should be when displayed, in pixels
   private Note lowNote;
   private Note highNote;
+  // I've added this field to represent the latest-running note of the piece
+  private Note lastNote;
+  // I've added this field to avoid recalculating the height every time it's accessed
+  private int height;
 
   public MusicPanel() {
     super();
     piece = new MusicController();
-    this.setSize(NOTE_SIZE * 64, NOTE_SIZE);
-  }
-
-  public MusicPanel(IMusicController piece) {
-    super();
-    this.piece = piece;
-    List<Note> notes = piece.getNotes();
-    lowNote = notes.get(0);
-    highNote = notes.get(0);
-    for (Note n : notes) {
-      if (n.compareTo(lowNote) < 0) {
-        lowNote = n;
-      }
-      if (n.compareTo(highNote) > 0) {
-        highNote = n;
-      }
-    }
-    this.setSize(NOTE_SIZE * 64, staffHeight());
   }
 
   @Override
   public int getHeight() {
-    return staffHeight() + (NOTE_SIZE * 3);
+    return height + (NOTE_SIZE * 3);
+  }
+
+  // I've added this method because it is required for scrolling the panel correctly
+  @Override
+  public int getWidth() {
+    if (lastNote == null) {
+      return NOTE_SIZE;
+    }
+    return (lastNote.getStartTime() + lastNote.getDuration()) * NOTE_SIZE + NOTE_SIZE * 2;
   }
 
   @Override
   public void paintComponent(Graphics g) {
-    if (highNote == null || lowNote == null) {
-      // The panel has not been initialized yet, do nothing
-    } else {
+    if (highNote != null && lowNote != null) {
       int vertOffset = NOTE_SIZE;
       int horiOffset = NOTE_SIZE * 2;
       List<Note> notes = piece.getNotes();
-      int height = staffHeight();
 
     /*
      * Draw the note names and staff lines
@@ -67,7 +61,8 @@ public class MusicPanel extends JPanel {
               high.getOctave() == lowNote.getOctave())) {
         g.drawString(high.getPitch().toString() + high.getOctave(), 0,
                 h * NOTE_SIZE - (NOTE_SIZE / 3) + vertOffset);
-        g.drawLine(horiOffset, h * NOTE_SIZE + vertOffset, this.getWidth(), h * NOTE_SIZE + vertOffset);
+        g.drawLine(horiOffset, h * NOTE_SIZE + vertOffset, this.getWidth(),
+                h * NOTE_SIZE + vertOffset);
         h++;
         high.transpose(-1);
       }
@@ -82,7 +77,8 @@ public class MusicPanel extends JPanel {
       for (Note n : notes) {
         int noteHeight = height - (notePosition(n) * NOTE_SIZE);
         g.setColor(Color.DARK_GRAY);
-        g.fillRect(n.getStartTime() * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset, NOTE_SIZE,
+        g.fillRect(n.getStartTime() * NOTE_SIZE + horiOffset,
+                noteHeight + 1 + vertOffset, NOTE_SIZE,
                 NOTE_SIZE - 1);
         for (int i = n.getStartTime() + 1; i < n.getStartTime() + n.getDuration(); i++) {
           g.setColor(Color.GRAY);
@@ -100,20 +96,26 @@ public class MusicPanel extends JPanel {
           g.setColor(Color.BLACK);
           g.drawString(String.valueOf(i), i * NOTE_SIZE + horiOffset, vertOffset - 1);
           g.drawLine((i * NOTE_SIZE) + horiOffset, vertOffset, (i * NOTE_SIZE) + horiOffset,
-                  this.staffHeight() + vertOffset);
+                  this.height + vertOffset);
         } else if (i % 4 == 0) {
           g.drawLine((i * NOTE_SIZE) + horiOffset, vertOffset, (i * NOTE_SIZE) + horiOffset,
-                  this.staffHeight() + vertOffset);
+                  this.height + vertOffset);
         }
       }
+    } else {
+      // The panel has not been initialized yet, do nothing
     }
   }
 
   public void setPiece(IMusicController piece) {
     this.piece = piece;
     List<Note> notes = piece.getNotes();
+    if (notes.isEmpty()) {
+      return;
+    }
     lowNote = notes.get(0);
     highNote = notes.get(0);
+    lastNote = notes.get(0);
     for (Note n : notes) {
       if (n.compareTo(lowNote) < 0) {
         lowNote = n;
@@ -121,7 +123,11 @@ public class MusicPanel extends JPanel {
       if (n.compareTo(highNote) > 0) {
         highNote = n;
       }
+      if (n.getStartTime() + n.getDuration() > lastNote.getStartTime() + lastNote.getDuration()) {
+        lastNote = n;
+      }
     }
+    this.height = staffHeight();
   }
 
   /**
@@ -134,10 +140,7 @@ public class MusicPanel extends JPanel {
     if (notes.isEmpty()) {
       return NOTE_SIZE;
     }
-    Note high = new Note(highNote.getPitch(), highNote.getOctave(), highNote.getDuration(),
-            highNote.getStartTime());
-
-    return notePosition(high) * NOTE_SIZE;
+    return notePosition(highNote) * NOTE_SIZE;
   }
 
   /**
