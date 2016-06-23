@@ -11,7 +11,7 @@ import cs3500.music.model.Pitch;
 /**
  * A skeleton for MIDI playback
  */
-public class MidiViewImpl implements IMusicView<Note> {
+public class MidiViewImpl implements MidiView<Note> {
 
   private final Sequencer sequencer;
   private Sequence sequence;
@@ -75,5 +75,10 @@ public class MidiViewImpl implements IMusicView<Note> {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  @Override
+  public long getBeats() {
+    return this.sequencer.getTickPosition();
   }
 }
