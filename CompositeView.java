@@ -6,6 +6,8 @@ import javax.swing.*;
 
 import cs3500.music.controller.IMusicController;
 import cs3500.music.model.Note;
+import cs3500.music.util.KeyboardListener;
+import cs3500.music.util.MouseClickListener;
 
 /**
  * Implements the functionality provided by InteractiveView for a view that both displays notes
@@ -15,22 +17,22 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   private MusicPanel staffPanel;
   private JPanel editPanel;
   private JScrollPane scrollPanel;
-  private JTextField durationText;
-  private JTextField startBeatText;
-  private JTextField pitchText;
-  private JTextField tempoText;
-  private JTextField transposeText;
+  private JTextField durationText, startBeatText, pitchText, tempoText, transposeText;
+  private MouseClickListener mouseListener;
+  private KeyboardListener keyboardListener;
+  private IMusicView<Note> guiView;
+  private IMusicView<Note> midiView;
 
   public CompositeView() {
     super();
     this.setLayout(new BorderLayout());
 
-    this.staffPanel = new CompositeMusicPanel();
+    this.staffPanel = new MusicPanel();
     this.scrollPanel = new JScrollPane(staffPanel);
     this.getContentPane().add(scrollPanel, BorderLayout.CENTER);
 
     this.editPanel = new JPanel();
-    initEditPanel();
+    this.initEditPanel();
     this.getContentPane().add(editPanel, BorderLayout.SOUTH);
 
     this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -84,6 +86,26 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   }
 
   @Override
+  public void setKeyboardListener(KeyboardListener k) {
+    this.keyboardListener = k;
+  }
+
+  @Override
+  public void setMouseListener(MouseClickListener m) {
+    this.mouseListener = m;
+  }
+
+  @Override
+  public void goToStart() {
+
+  }
+
+  @Override
+  public void goToEnd() {
+
+  }
+
+  @Override
   public Dimension getPreferredSize() {
     return new Dimension(1500, 800);
   }
@@ -125,8 +147,8 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
   @Override
   public void play(IMusicController<Note> piece) {
-    staffPanel.setPiece(piece);
-    staffPanel.setPreferredSize(new Dimension(staffPanel.getWidth(), staffPanel.getHeight()));
+    this.staffPanel.setPiece(piece);
+    this.staffPanel.setPreferredSize(new Dimension(staffPanel.getWidth(), staffPanel.getHeight()));
     this.repaint();
   }
 }

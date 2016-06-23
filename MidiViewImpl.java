@@ -69,8 +69,6 @@ public class MidiViewImpl implements IMusicView<Note> {
         }
       }
 
-      Thread.sleep(this.sequence.getTickLength() * piece.getTempo() / 1000);
-
       this.sequencer.stop();
       this.sequencer.close();
 

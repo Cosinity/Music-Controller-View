@@ -20,7 +20,7 @@ public class CompositeMusicPanel extends MusicPanel {
     super.paintComponent(g);
     g.setColor(Color.RED);
     g.drawLine((NOTE_SIZE * 2) + (currentBeat * NOTE_SIZE), NOTE_SIZE,
-              (NOTE_SIZE * 2) + (currentBeat * NOTE_SIZE), this.getHeight());
+            (NOTE_SIZE * 2) + (currentBeat * NOTE_SIZE), this.getHeight());
   }
 
   /**
@@ -37,7 +37,7 @@ public class CompositeMusicPanel extends MusicPanel {
     if (b < 0) {
       throw new IllegalArgumentException("Illegal beat");
     } else {
-      currentBeat = b;
+      this.currentBeat = b;
     }
   }
 }

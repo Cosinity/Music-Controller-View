@@ -1,6 +1,8 @@
 package cs3500.music.view;
 
 import cs3500.music.model.Note;
+import cs3500.music.util.KeyboardListener;
+import cs3500.music.util.MouseClickListener;
 
 /**
  * Represents the functionality of a view for MusicPlayer with interactability
@@ -43,4 +45,26 @@ public interface InteractiveView<T> extends IMusicView<T> {
    * Returns whichever note is at the given x and y coordinates
    */
   T noteAtPos(int x, int y);
+
+  /**
+   * Sets the keyboard listener of the interactive view to the one that is given
+   * @param k the keyboard listener to set to
+   */
+  void setKeyboardListener(KeyboardListener k);
+
+  /**
+   * Sets the mouse listener of the interactive view to the one that is given
+   * @param m the mouse listener to set to
+   */
+  void setMouseListener(MouseClickListener m);
+
+  /**
+   * Moves the view to the start of the song
+   */
+  void goToStart();
+
+  /**
+   * Moves the view to the end of the song
+   */
+  void goToEnd();
 }
