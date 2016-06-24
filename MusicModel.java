@@ -252,7 +252,7 @@ public class MusicModel implements GenericMusicPiece<Note> {
                                                          int pitch, int volume) {
       Pitch p = Pitch.values()[pitch % Pitch.values().length];
       int octave = (pitch / Pitch.values().length);
-      int duration = end - start + 1;
+      int duration = end - start;
       Note toAdd = new Note(p, octave, duration, start, instrument, volume);
       this.model.addNote(toAdd);
       return this;
