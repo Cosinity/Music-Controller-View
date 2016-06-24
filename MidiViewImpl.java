@@ -62,15 +62,10 @@ public class MidiViewImpl implements MidiView<Note> {
       this.sequencer.setSequence(sequence);
       this.sequencer.start();
 
-      int totalLength = -1;
-      for (Note n : notes) {
-        if (n.getDuration() + n.getStartTime() - 1 > totalLength) {
-          totalLength = n.getDuration() + n.getStartTime() - 1;
-        }
+      if (this.sequencer.getMicrosecondLength() == this.sequencer.getMicrosecondPosition()) {
+        this.sequencer.stop();
+        this.sequencer.close();
       }
-
-      this.sequencer.stop();
-      this.sequencer.close();
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -89,6 +84,8 @@ public class MidiViewImpl implements MidiView<Note> {
 
   @Override
   public void unpause() {
+    float temp = this.sequencer.getTempoInMPQ();
     this.sequencer.start();
+    this.sequencer.setTempoInMPQ(temp);
   }
 }
