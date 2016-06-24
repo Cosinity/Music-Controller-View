@@ -196,6 +196,7 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     }
     else {
       this.timer.start();
+      this.midiView.unpause();
     }
   }
 
