@@ -81,4 +81,14 @@ public class MidiViewImpl implements MidiView<Note> {
   public long getBeats() {
     return this.sequencer.getTickPosition();
   }
+
+  @Override
+  public void pause() {
+    this.sequencer.stop();
+  }
+
+  @Override
+  public void unpause() {
+    this.sequencer.start();
+  }
 }

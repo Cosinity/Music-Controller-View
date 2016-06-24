@@ -21,7 +21,7 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   private MouseClickListener mouseListener;
   private KeyboardListener keyboardListener;
   private IMusicView<Note> guiView;
-  private IMusicView<Note> midiView;
+  private MidiView<Note> midiView;
   private Timer timer;
 
   public CompositeView() {
@@ -164,9 +164,11 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   public void togglePause() {
     if (this.timer.isRunning()) {
       this.timer.stop();
+      this.midiView.pause();
     }
     else {
       this.timer.start();
+      this.midiView.unpause();
     }
   }
 }
