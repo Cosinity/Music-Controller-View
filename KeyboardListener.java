@@ -28,18 +28,25 @@ public class KeyboardListener implements KeyListener {
 
   @Override
   public void keyTyped(KeyEvent e) {
-    if (this.typed.containsKey(e.getKeyChar())) {
-      this.typed.get(e.getKeyChar()).run();
+    Runnable action = this.typed.get(e.getKeyChar());
+    if (action != null) {
+      action.run();
     }
   }
 
   @Override
   public void keyPressed(KeyEvent e) {
-    // Do nothing
+    Runnable action = this.pressed.get(e.getKeyCode());
+    if (action != null) {
+      action.run();
+    }
   }
 
   @Override
   public void keyReleased(KeyEvent e) {
-    // Do nothing
+    Runnable action = this.released.get(e.getKeyCode());
+    if (action != null) {
+      action.run();
+    }
   }
 }
