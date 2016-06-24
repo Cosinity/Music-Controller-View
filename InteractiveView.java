@@ -1,8 +1,10 @@
 package cs3500.music.view;
 
+import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
+
 import cs3500.music.model.Note;
-import cs3500.music.util.KeyboardListener;
-import cs3500.music.util.MouseClickListener;
 
 /**
  * Represents the functionality of a view for MusicPlayer with interactability
@@ -50,13 +52,13 @@ public interface InteractiveView<T> extends IMusicView<T> {
    * Sets the keyboard listener of the interactive view to the one that is given
    * @param k the keyboard listener to set to
    */
-  void setKeyboardListener(KeyboardListener k);
+  void addKeyListener(KeyListener k);
 
   /**
    * Sets the mouse listener of the interactive view to the one that is given
    * @param m the mouse listener to set to
    */
-  void setMouseListener(MouseClickListener m);
+  void addMouseListener(MouseListener m);
 
   /**
    * Moves the view to the start of the song
@@ -72,4 +74,11 @@ public interface InteractiveView<T> extends IMusicView<T> {
    * Toggles whether the piece is currently playing
    */
   void togglePause();
+
+  /**
+   * Resets focus to the part of the view with the keyboard listener attached
+   */
+  void resetFocus();
+
+  void addActionListener(ActionListener al);
 }
