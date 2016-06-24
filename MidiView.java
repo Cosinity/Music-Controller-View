@@ -1,14 +1,16 @@
 package cs3500.music.view;
 
+import cs3500.music.model.Note;
+
 /**
  * Addition to the View interface that allows for fetching of beats
  */
-public interface MidiView<Note> extends IMusicView<Note> {
+public interface MidiView<T> extends IMusicView<T> {
   /**
    * Returns the beat that's currently playing in the song
    * @return the beat that's currently playing in the song
    */
-  long getBeats();
+  long getBeat();
 
   /**
    * Pauses the playback of the MIDI view

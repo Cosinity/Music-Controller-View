@@ -1,45 +1,49 @@
 package cs3500.music.view;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
 import cs3500.music.controller.IMusicController;
 import cs3500.music.model.Note;
-import cs3500.music.util.KeyboardListener;
-import cs3500.music.util.MouseClickListener;
 
 /**
  * Implements the functionality provided by InteractiveView for a view that both displays notes
  * to a GUI and plays them with MIDI
  */
 public class CompositeView extends JFrame implements InteractiveView<Note> {
-  private MusicPanel staffPanel;
+  private CompositeMusicPanel displayPanel;
   private JPanel editPanel;
   private JScrollPane scrollPanel;
   private JTextField durationText, startBeatText, pitchText, tempoText, transposeText;
-  private MouseClickListener mouseListener;
-  private KeyboardListener keyboardListener;
-  private IMusicView<Note> guiView;
+  private JButton addButton, editButton, changeButton;
+  private MouseListener mouseListener;
+  private KeyListener keyboardListener;
   private MidiView<Note> midiView;
   private Timer timer;
 
   public CompositeView() {
     super();
     this.setLayout(new BorderLayout());
+    this.midiView = new MidiViewImpl();
 
-    this.staffPanel = new MusicPanel();
-    this.scrollPanel = new JScrollPane(staffPanel);
-    this.getContentPane().add(scrollPanel, BorderLayout.CENTER);
+    this.displayPanel = new CompositeMusicPanel();
+    this.scrollPanel = new JScrollPane(displayPanel);
+    this.add(this.scrollPanel, BorderLayout.CENTER);
 
     this.editPanel = new JPanel();
     this.initEditPanel();
-    this.getContentPane().add(editPanel, BorderLayout.SOUTH);
+    this.add(editPanel, BorderLayout.SOUTH);
 
     this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     this.pack();
-    this.setVisible(true);
-    this.timer = new Timer(1, e -> {});
+    this.timer = new Timer(1, e -> {
+      this.displayPanel.setBeat((int) this.midiView.getBeat());
+      //System.out.println(this.midiView.getBeat());
+    });
     // TODO: 2016-06-23 CREATE THE ACTIONLISTENER FOR THE TIMER
     // ActionListener Needs
     // for current beat: timer asks midi view for current beat, passes it to the gui view,
@@ -58,34 +62,49 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     JPanel notePanel = new JPanel();
     notePanel.setLayout(new FlowLayout());
 
+    // Pitch label and text box
     notePanel.add(new JLabel("Pitch: "));
     this.pitchText = new JTextField(3);
     notePanel.add(pitchText);
 
+    // Duration label and text box
     notePanel.add(new JLabel("Duration: "));
     this.durationText = new JTextField(3);
     notePanel.add(durationText);
 
+    // Starting beat label and text box
     notePanel.add(new JLabel("Start Beat: "));
     this.startBeatText = new JTextField(4);
     notePanel.add(startBeatText);
 
-    notePanel.add(new JButton("Add"));
-    notePanel.add(new JButton("Edit"));
+    // Add button
+    this.addButton = new JButton("Add");
+    this.addButton.setActionCommand("Add");
+    notePanel.add(this.addButton);
+
+    // Edit button
+    this.editButton = new JButton("Edit");
+    editButton.setActionCommand("Edit");
+    notePanel.add(editButton);
 
     // Panel that contains the piece-related components
     JPanel piecePanel = new JPanel();
     piecePanel.setLayout(new FlowLayout());
 
+    // Tempo label and text box
     piecePanel.add(new JLabel("Tempo: "));
     this.tempoText = new JTextField(10);
     piecePanel.add(tempoText);
 
+    // Transposition label and text box
     piecePanel.add(new JLabel("Transpose: "));
     this.transposeText = new JTextField(2);
     piecePanel.add(transposeText);
 
-    piecePanel.add(new JButton("Change"));
+    // Change button
+    this.changeButton = new JButton("Change");
+    changeButton.setActionCommand("Change");
+    piecePanel.add(changeButton);
 
     editPanel.add(new JLabel("Note"));
     editPanel.add(notePanel);
@@ -94,13 +113,20 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   }
 
   @Override
-  public void setKeyboardListener(KeyboardListener k) {
+  public void addKeyListener(KeyListener k) {
     this.keyboardListener = k;
   }
 
   @Override
-  public void setMouseListener(MouseClickListener m) {
+  public void addMouseListener(MouseListener m) {
     this.mouseListener = m;
+  }
+
+  @Override
+  public void addActionListener(ActionListener al) {
+    this.editButton.addActionListener(al);
+    this.addButton.addActionListener(al);
+    this.changeButton.addActionListener(al);
   }
 
   @Override
@@ -155,9 +181,11 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
   @Override
   public void play(IMusicController<Note> piece) {
-    this.staffPanel.setPiece(piece);
-    this.staffPanel.setPreferredSize(new Dimension(staffPanel.getWidth(), staffPanel.getHeight()));
-    this.repaint();
+    this.displayPanel.setPiece(piece);
+    this.displayPanel.setPreferredSize(new Dimension(displayPanel.getWidth(),
+            displayPanel.getHeight()));
+    this.midiView.play(piece);
+    this.setVisible(true);
   }
 
   @Override
@@ -168,7 +196,13 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     }
     else {
       this.timer.start();
-      this.midiView.unpause();
     }
+  }
+
+  @Override
+  public void resetFocus() {
+    this.setFocusable(true);
+    this.requestFocus();
+    this.midiView.unpause();
   }
 }
