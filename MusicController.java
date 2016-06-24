@@ -91,4 +91,9 @@ public class MusicController implements IMusicController<Note> {
   public long getTempo() {
     return this.model.getTempo();
   }
+
+  @Override
+  public void setTempo(int toSet) {
+    this.model.setTempo(toSet);
+  }
 }

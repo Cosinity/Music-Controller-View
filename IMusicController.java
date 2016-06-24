@@ -106,4 +106,9 @@ public interface IMusicController<T> {
    * Fetches the piece's tempo
    */
   long getTempo();
+
+  /**
+   * Changes a piece's tempo
+   */
+  void setTempo(int toSet);
 }
