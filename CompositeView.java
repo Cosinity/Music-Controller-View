@@ -41,8 +41,8 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
     this.pack();
     this.timer = new Timer(1, e -> {
-      this.displayPanel.setBeat((int) this.midiView.getBeat());
-      //System.out.println(this.midiView.getBeat());
+      this.displayPanel.setBeat(this.midiView.getBeat());
+      System.out.println(this.midiView.getBeat());
     });
     // TODO: 2016-06-23 CREATE THE ACTIONLISTENER FOR THE TIMER
     // ActionListener Needs
@@ -204,6 +204,5 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   public void resetFocus() {
     this.setFocusable(true);
     this.requestFocus();
-    this.midiView.unpause();
   }
 }

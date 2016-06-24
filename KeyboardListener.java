@@ -12,9 +12,7 @@ public class KeyboardListener implements KeyListener {
   Map<Character, Runnable> typed;
   Map<Integer, Runnable> pressed, released;
 
-  public KeyboardListener() {
-
-  }
+  public KeyboardListener() { }
 
   public void setTypedMap(Map<Character, Runnable> toSet) {
     this.typed = toSet;
@@ -30,16 +28,18 @@ public class KeyboardListener implements KeyListener {
 
   @Override
   public void keyTyped(KeyEvent e) {
-
+    if (this.typed.containsKey(e.getKeyChar())) {
+      this.typed.get(e.getKeyChar()).run();
+    }
   }
 
   @Override
   public void keyPressed(KeyEvent e) {
-
+    // Do nothing
   }
 
   @Override
   public void keyReleased(KeyEvent e) {
-
+    // Do nothing
   }
 }

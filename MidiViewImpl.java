@@ -89,8 +89,6 @@ public class MidiViewImpl implements MidiView<Note> {
 
   @Override
   public void unpause() {
-    float temp = this.sequencer.getTempoInMPQ();
     this.sequencer.start();
-    this.sequencer.setTempoInMPQ(temp);
   }
 }

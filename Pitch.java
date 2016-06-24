@@ -2,6 +2,7 @@ package cs3500.music.model;
 
 /**
  * Created by Nick on 2016-06-07.
+ * Changed for hw07 to clean it up and add a create() method
  */
 public enum Pitch {
   C("C"), C_SHARP("C#"), D("D"), D_SHARP("D#"), E("E"), F("F"), F_SHARP("F#"), G("G"), G_SHARP

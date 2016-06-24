@@ -8,7 +8,7 @@ import cs3500.music.model.Note;
  * Adds functionality related to the composite view to MusicPanel
  */
 public class CompositeMusicPanel extends MusicPanel {
-  private int currentBeat;
+  private long currentBeat;
 
   public CompositeMusicPanel() {
     super();
@@ -19,8 +19,8 @@ public class CompositeMusicPanel extends MusicPanel {
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
     g.setColor(Color.RED);
-    g.drawLine((NOTE_SIZE * 2) + (currentBeat * NOTE_SIZE), NOTE_SIZE,
-            (NOTE_SIZE * 2) + (currentBeat * NOTE_SIZE), this.getHeight());
+    g.drawLine((NOTE_SIZE * 2) + ((int) this.currentBeat * NOTE_SIZE), NOTE_SIZE,
+            (NOTE_SIZE * 2) + ((int) this.currentBeat * NOTE_SIZE), this.getHeight());
   }
 
   /**
@@ -33,7 +33,7 @@ public class CompositeMusicPanel extends MusicPanel {
   /**
    * Set the current beat to the given beat
    */
-  public void setBeat(int b) {
+  public void setBeat(long b) {
     if (b < 0) {
       throw new IllegalArgumentException("Illegal beat");
     } else {

@@ -13,10 +13,11 @@ import cs3500.music.model.Note;
  * Displays a musical piece
  */
 public class MusicPanel extends JPanel {
-  private IMusicController piece;
+  private IMusicController<Note> piece;
   // I made this field public because it is useful for other classes to have access to it, and
   // it is final so it's safe
-  public final int NOTE_SIZE = 20;  // How large the notes should be when displayed, in pixels
+  public static final int NOTE_SIZE = 20;  // How large the notes should be when displayed, in
+  // pixels
   private Note lowNote;
   private Note highNote;
   // I've added this field to represent the latest-running note of the piece
@@ -26,7 +27,7 @@ public class MusicPanel extends JPanel {
 
   public MusicPanel() {
     super();
-    piece = new MusicController();
+    this.piece = new MusicController();
   }
 
   @Override
@@ -102,12 +103,10 @@ public class MusicPanel extends JPanel {
                   this.height + vertOffset);
         }
       }
-    } else {
-      // The panel has not been initialized yet, do nothing
     }
   }
 
-  public void setPiece(IMusicController piece) {
+  public void setPiece(IMusicController<Note> piece) {
     this.piece = piece;
     List<Note> notes = piece.getNotes();
     if (notes.isEmpty()) {

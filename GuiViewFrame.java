@@ -33,7 +33,6 @@ public class GuiViewFrame extends JFrame implements IMusicView {
   @Override
   public void play(IMusicController piece) {
     this.displayPanel.setPiece(piece);
-    this.displayPanel.repaint();
     this.setSize(displayPanel.getWidth(), displayPanel.getHeight());
   }
 }

@@ -19,7 +19,9 @@ public class MusicEditor {
     IMusicView view = ViewFactory.make(args[1]);
     FileReader file = new FileReader(args[0]);
     MusicModel.Builder builder = new MusicModel.Builder();
-    IMusicController<cs3500.music.model.Note> controller;
+    IMusicController<cs3500.music.model.Note> controller =  new InteractiveMusicController
+            (MusicReader.parseFile(file, builder));
+    /*
     if (args[1].toLowerCase().equals("composite")) {
       controller = new InteractiveMusicController(MusicReader.parseFile(file, builder));
     }
@@ -27,6 +29,7 @@ public class MusicEditor {
       controller = new MusicController(
               MusicReader.parseFile(file, builder));
     }
+    */
     controller.play(view);
   }
 }
