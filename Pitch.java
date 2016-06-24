@@ -4,14 +4,34 @@ package cs3500.music.model;
  * Created by Nick on 2016-06-07.
  */
 public enum Pitch {
-  C, C_SHARP, D, D_SHARP, E, F, F_SHARP, G, G_SHARP, A, A_SHARP, B;
+  C("C"), C_SHARP("C#"), D("D"), D_SHARP("D#"), E("E"), F("F"), F_SHARP("F#"), G("G"), G_SHARP
+          ("G#"), A("A"), A_SHARP("A#"), B("B");
 
   boolean flat;
+  String name;
+  String flatName;
 
   /**
    * Default pitch constructor - defaults to sharps instead of flats
    */
   Pitch() {
+    this.flat = false;
+  }
+
+  /**
+   * Constructor with the name of the pitch
+   */
+  Pitch(String name) {
+    this.name = name;
+    this.flatName = name;
+    if (this.name.contains("#")) {
+      if (name.charAt(0) == 'G') {
+        this.flatName = "Ab";
+      } else {
+        int charValue = name.charAt(0);
+        this.flatName = String.valueOf((char) (charValue + 1)) + "b";
+      }
+    }
     this.flat = false;
   }
 
@@ -27,14 +47,24 @@ public enum Pitch {
    * @return abbreviated String representation of the note
    */
   public String toString() {
-    String thisNote = this.name();
-    if (thisNote.contains("SHARP")) {
-      if (this.flat) {
-        thisNote = values()[this.ordinal() + 1].toString();
-        return thisNote.substring(0, 1) + "b";
-      }
-      return thisNote.substring(0, 1) + "#";
+    if (this.flat) {
+      return this.flatName;
+    } else {
+      return this.name;
     }
-    return thisNote;
+  }
+
+  /**
+   * Creates a new Pitch from the given string
+   *
+   * @return the new pitch
+   */
+  public static Pitch create(String s) {
+    for (Pitch p : values()) {
+      if (p.name.equals(s.toUpperCase())) {
+        return p;
+      }
+    }
+    throw new IllegalArgumentException("Illegal pitch name");
   }
 }
