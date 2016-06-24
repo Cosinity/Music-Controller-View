@@ -59,7 +59,7 @@ public class InteractiveMusicController extends MusicController implements Actio
     Map<Integer, Runnable> pressed = new HashMap<Integer, Runnable>();
     Map<Integer, Runnable> released = new HashMap<Integer, Runnable>();
 
-    typed.put(' ', () -> this.view.togglePause()); // pause/unpause with spacebar
+    pressed.put(KeyEvent.VK_SPACE, () -> this.view.togglePause());
     pressed.put(KeyEvent.VK_HOME, () -> this.view.goToStart());
     pressed.put(KeyEvent.VK_END, () -> this.view.goToEnd());
 
