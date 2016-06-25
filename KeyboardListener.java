@@ -2,6 +2,7 @@ package cs3500.music.util;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -12,7 +13,11 @@ public class KeyboardListener implements KeyListener {
   Map<Character, Runnable> typed;
   Map<Integer, Runnable> pressed, released;
 
-  public KeyboardListener() { }
+  public KeyboardListener() {
+    this.typed = new HashMap<Character, Runnable>();
+    this.pressed = new HashMap<Integer, Runnable>();
+    this.released = new HashMap<Integer, Runnable>();
+  }
 
   public void setTypedMap(Map<Character, Runnable> toSet) {
     this.typed = toSet;
