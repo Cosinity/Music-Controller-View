@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 
+import cs3500.music.controller.IMusicController;
 import cs3500.music.model.Note;
 
 /**
@@ -80,5 +81,14 @@ public interface InteractiveView<T> extends IMusicView<T> {
    */
   void resetFocus();
 
+  /**
+   * Adds an action listener to the view
+   * @param al the action listener to add
+   */
   void addActionListener(ActionListener al);
+
+  /**
+   * Restarts the midi playback when adding/editing notes
+   */
+  void restartMidi(IMusicController controller);
 }
