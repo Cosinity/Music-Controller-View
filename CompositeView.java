@@ -41,12 +41,22 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     this.pack();
     this.timer = new Timer(1, e -> {
       this.displayPanel.setBeat(this.midiView.getBeat());
-      if (this.midiView.getBeat() > 24) {
+      int lastB = this.lastBeat();
+      if (this.midiView.getBeat() >= lastB) {
         JScrollBar sb = scrollPanel.getHorizontalScrollBar();
-        sb.setValue((int) (this.midiView.getBeat() - 24) * MusicPanel.NOTE_SIZE);
+        sb.setValue((int) this.midiView.getBeat() * MusicPanel.NOTE_SIZE);
+        lastB = this.lastBeat();
       }
     });
     this.timer.start();
+  }
+
+  /**
+   * Gets the last beat currently visible on the screen
+   */
+  private int lastBeat() {
+    return this.getWidth() / MusicPanel.NOTE_SIZE +
+            this.scrollPanel.getHorizontalScrollBar().getValue() / MusicPanel.NOTE_SIZE - 2;
   }
 
   /**

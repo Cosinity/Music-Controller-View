@@ -56,15 +56,29 @@ public class CompositeMusicPanel extends MusicPanel {
      */
       for (Note n : notes) {
         int noteHeight = height - (notePosition(n) * NOTE_SIZE);
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(n.getStartTime() * NOTE_SIZE + horiOffset,
-                noteHeight + 1 + vertOffset, NOTE_SIZE,
-                NOTE_SIZE - 1);
-        for (int i = n.getStartTime() + 1; i < n.getStartTime() + n.getDuration(); i++) {
-          g.setColor(Color.GRAY);
-          g.fillRect(i * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset,
-                  NOTE_SIZE, NOTE_SIZE - 1);
+        if (n.getStartTime() <= this.currentBeat &&
+                n.getStartTime() + n.getDuration() >= this.currentBeat) {
+          g.setColor(Color.DARK_GRAY);
+          g.fillRect(n.getStartTime() * NOTE_SIZE + horiOffset,
+                  noteHeight + 1 + vertOffset, NOTE_SIZE,
+                  NOTE_SIZE - 1);
+          for (int i = n.getStartTime() + 1; i < n.getStartTime() + n.getDuration(); i++) {
+            g.setColor(Color.ORANGE);
+            g.fillRect(i * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset,
+                    NOTE_SIZE, NOTE_SIZE - 1);
+          }
+        } else {
+          g.setColor(Color.DARK_GRAY);
+          g.fillRect(n.getStartTime() * NOTE_SIZE + horiOffset,
+                  noteHeight + 1 + vertOffset, NOTE_SIZE,
+                  NOTE_SIZE - 1);
+          for (int i = n.getStartTime() + 1; i < n.getStartTime() + n.getDuration(); i++) {
+            g.setColor(Color.GRAY);
+            g.fillRect(i * NOTE_SIZE + horiOffset, noteHeight + 1 + vertOffset,
+                    NOTE_SIZE, NOTE_SIZE - 1);
+          }
         }
+
         if (n.equals(this.selectedNote)) {
           g.setColor(Color.CYAN);
           g.drawRect(n.getStartTime() * NOTE_SIZE + horiOffset, noteHeight + vertOffset,
