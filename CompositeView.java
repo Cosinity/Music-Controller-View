@@ -9,7 +9,6 @@ import java.awt.event.MouseListener;
 import javax.swing.*;
 
 import cs3500.music.controller.IMusicController;
-import cs3500.music.controller.InteractiveMusicController;
 import cs3500.music.model.Note;
 
 /**
@@ -64,17 +63,17 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
     // Pitch label and text box
     notePanel.add(new JLabel("Pitch: "));
-    this.pitchText = new JTextField(3);
+    this.pitchText = new JTextField("C4", 3);
     notePanel.add(pitchText);
 
     // Duration label and text box
     notePanel.add(new JLabel("Duration: "));
-    this.durationText = new JTextField(3);
+    this.durationText = new JTextField("0", 3);
     notePanel.add(durationText);
 
     // Starting beat label and text box
     notePanel.add(new JLabel("Start Beat: "));
-    this.startBeatText = new JTextField(4);
+    this.startBeatText = new JTextField("0", 4);
     notePanel.add(startBeatText);
 
     // Add button
@@ -115,17 +114,20 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   @Override
   public void addKeyListener(KeyListener k) {
     this.keyboardListener = k;
+    this.scrollPanel.addKeyListener(k);
   }
 
   @Override
   public void addMouseListener(MouseListener m) {
     this.mouseListener = m;
+    this.scrollPanel.addMouseListener(this.mouseListener);
   }
 
   @Override
   public void addActionListener(ActionListener al) {
-    this.editButton.setActionCommand("hello");
     this.editButton.addActionListener(al);
+    this.addButton.addActionListener(al);
+    this.changeButton.addActionListener(al);
   }
 
   @Override
@@ -150,7 +152,11 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
   @Override
   public void selectNote(Note n) {
-
+    if (n != null) {
+      this.pitchText.setText(n.getPitch().toString() + n.getOctave());
+      this.startBeatText.setText(String.valueOf(n.getStartTime()));
+      this.durationText.setText(String.valueOf(n.getDuration()));
+    }
   }
 
   @Override
@@ -180,7 +186,7 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
   @Override
   public Note noteAtPos(int x, int y) {
-    return null;
+    return this.displayPanel.noteAtPos(x, y);
   }
 
   @Override
@@ -190,6 +196,7 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     this.displayPanel.setPreferredSize(new Dimension(displayPanel.getWidth(),
             displayPanel.getHeight()));
     this.midiView.play(piece);
+    this.resetFocus();
     this.setVisible(true);
   }
 
