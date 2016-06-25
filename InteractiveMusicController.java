@@ -7,19 +7,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cs3500.music.model.GenericMusicPiece;
-import cs3500.music.model.MusicModel;
 import cs3500.music.model.Note;
 import cs3500.music.model.Pitch;
 import cs3500.music.util.KeyboardListener;
 import cs3500.music.util.MouseClickListener;
-import cs3500.music.view.CompositeView;
+import cs3500.music.view.IMusicView;
 import cs3500.music.view.InteractiveView;
 
 /**
  * Interactive Music Controller for the Composite view
  */
 public class InteractiveMusicController extends MusicController implements ActionListener {
-
   private InteractiveView<Note> view;
   private MouseClickListener mouseClickListener;
   private KeyboardListener keyboardListener;
@@ -27,24 +25,17 @@ public class InteractiveMusicController extends MusicController implements Actio
 
   public InteractiveMusicController(GenericMusicPiece<Note> piece) {
     super(piece);
-    this.init();
-  }
-
-  private void init() {
     this.mouseClickListener = new MouseClickListener();
     this.keyboardListener = new KeyboardListener();
-    this.view = new CompositeView();
-    this.setKeyboardActions();
-    this.setMouseActions();
-    this.view.addActionListener(this);
-    this.view.addKeyListener(this.keyboardListener);
-    this.view.addMouseListener(this.mouseClickListener);
   }
 
   private void setMouseActions() {
     this.mouseClickListener.setLeftAction((int x, int y) -> {
       this.selectedNote = this.view.noteAtPos(x, y);
       this.view.selectNote(this.selectedNote);
+    });
+    this.mouseClickListener.setRightAction((int x, int y) -> {
+      this.removeNote(this.view.noteAtPos(x, y));
     });
   }
 
@@ -63,11 +54,24 @@ public class InteractiveMusicController extends MusicController implements Actio
   }
 
   @Override
-  public void actionPerformed(ActionEvent e) {
-
-    if (e.getActionCommand().equals("hello")) {
-      System.out.println("Eureka");
+  public void play(IMusicView<Note> view) {
+    try {
+      InteractiveView<Note> v = (InteractiveView<Note>) view;
+      this.view = v;
+      this.setMouseActions();
+      this.setKeyboardActions();
+      this.view.addActionListener(this);
+      this.view.addMouseListener(this.mouseClickListener);
+      this.view.addKeyListener(this.keyboardListener);
+      v.play(this);
+    } catch (Exception e) {
+      super.play(view);
     }
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    System.out.println("Hello");
     Pitch p;
     int octave;
     int duration;
