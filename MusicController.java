@@ -23,7 +23,7 @@ public class MusicController implements IMusicController<Note> {
   }
 
   @Override
-  public void play(IMusicView view) {
+  public void play(IMusicView<Note> view) {
     view.play(this);
   }
 
@@ -88,9 +88,7 @@ public class MusicController implements IMusicController<Note> {
   }
 
   @Override
-  public long getTempo() {
-    return this.model.getTempo();
-  }
+  public long getTempo() { return this.model.getTempo(); }
 
   @Override
   public void setTempo(int toSet) {

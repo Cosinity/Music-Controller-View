@@ -16,7 +16,7 @@ public interface IMusicController<T> {
    * Plays the given piece in the manner of the given view (e.g. displays it to a GUI, plays
    * the notes' audio, etc.)
    */
-  void play(IMusicView view);
+  void play(IMusicView<Note> view);
 
   /**
    * Appends a music piece to the controller's music piece.

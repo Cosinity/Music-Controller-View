@@ -21,8 +21,6 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   private JScrollPane scrollPanel;
   private JTextField durationText, startBeatText, pitchText, tempoText, transposeText;
   private JButton addButton, editButton, changeButton;
-  private MouseListener mouseListener;
-  private KeyListener keyboardListener;
   private MidiView<Note> midiView;
   private Timer timer;
 
@@ -113,14 +111,12 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
   @Override
   public void addKeyListener(KeyListener k) {
-    this.keyboardListener = k;
     this.scrollPanel.addKeyListener(k);
   }
 
   @Override
   public void addMouseListener(MouseListener m) {
-    this.mouseListener = m;
-    this.scrollPanel.addMouseListener(this.mouseListener);
+    this.scrollPanel.addMouseListener(m);
   }
 
   @Override
@@ -131,11 +127,16 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   }
 
   @Override
+  public void restart(IMusicController<Note> controller) {
+    this.play(controller);
+  }
+
+  @Override
   public void goToStart() {
-    JScrollBar sb = this.scrollPanel.getHorizontalScrollBar();
-    sb.setValue(sb.getMinimum());
-    this.timer.restart();
+    this.scrollPanel.getHorizontalScrollBar().setValue(
+            this.scrollPanel.getHorizontalScrollBar().getMinimum());
     this.timer.stop();
+    this.midiView.pause();
   }
 
   @Override
@@ -143,6 +144,7 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     JScrollBar sb = this.scrollPanel.getHorizontalScrollBar();
     sb.setValue(sb.getMaximum());
     this.timer.stop();
+    this.midiView.pause();
   }
 
   @Override
@@ -186,7 +188,9 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
   @Override
   public Note noteAtPos(int x, int y) {
-    return this.displayPanel.noteAtPos(x, y);
+    int absoluteX = x + this.scrollPanel.getHorizontalScrollBar().getValue();
+    int absoluteY = y + this.scrollPanel.getVerticalScrollBar().getValue();
+    return this.displayPanel.noteAtPos(absoluteX, absoluteY);
   }
 
   @Override
@@ -195,6 +199,8 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     this.displayPanel.setPiece(piece);
     this.displayPanel.setPreferredSize(new Dimension(displayPanel.getWidth(),
             displayPanel.getHeight()));
+    this.midiView.restart();
+    this.timer.restart();
     this.midiView.play(piece);
     this.resetFocus();
     this.setVisible(true);
@@ -216,15 +222,5 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
   public void resetFocus() {
     this.scrollPanel.setFocusable(true);
     this.scrollPanel.requestFocus();
-  }
-
-  @Override
-  public void restartMidi(IMusicController controller) {
-    this.timer.restart();
-    this.togglePause();
-    this.midiView.play(controller);
-    this.midiView.pause();
-    this.goToStart();
-    this.togglePause();
   }
 }

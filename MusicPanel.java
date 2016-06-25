@@ -13,17 +13,19 @@ import cs3500.music.model.Note;
  * Displays a musical piece
  */
 public class MusicPanel extends JPanel {
-  private IMusicController<Note> piece;
+  // I made this field protected so subclasses could access it
+  protected IMusicController<Note> piece;
   // I made this field public because it is useful for other classes to have access to it, and
   // it is final so it's safe
   public static final int NOTE_SIZE = 20;  // How large the notes should be when displayed, in
-  // pixels
-  private Note lowNote;
-  private Note highNote;
+                                           // pixels
+  // I made these fields protected so subclasses could access them
+  protected Note lowNote;
+  protected Note highNote;
   // I've added this field to represent the latest-running note of the piece
   private Note lastNote;
   // I've added this field to avoid recalculating the height every time it's accessed
-  private int height;
+  protected int height;
 
   public MusicPanel() {
     super();
@@ -32,7 +34,7 @@ public class MusicPanel extends JPanel {
 
   @Override
   public int getHeight() {
-    return height + (NOTE_SIZE * 3);
+    return height + NOTE_SIZE + 1;
   }
 
   // I've added this method because it is required for scrolling the panel correctly
@@ -41,7 +43,7 @@ public class MusicPanel extends JPanel {
     if (lastNote == null) {
       return NOTE_SIZE;
     }
-    return (lastNote.getStartTime() + lastNote.getDuration()) * NOTE_SIZE + NOTE_SIZE * 2;
+    return ((lastNote.getStartTime() + lastNote.getDuration()) * NOTE_SIZE) + (NOTE_SIZE * 2);
   }
 
   @Override
@@ -134,7 +136,7 @@ public class MusicPanel extends JPanel {
    *
    * @return the height required to display all notes in this piece
    */
-  private int staffHeight() {
+  protected int staffHeight() {
     List<Note> notes = piece.getNotes();
     if (notes.isEmpty()) {
       return NOTE_SIZE;
@@ -149,7 +151,7 @@ public class MusicPanel extends JPanel {
    * @return the number of notes (semitones) from the lowest note (exclusive) to the given note
    * (inclusive)
    */
-  private int notePosition(Note n) {
+  protected int notePosition(Note n) {
     Note moddable = n.copy();
     int notesBetween = 1;
     while (!(lowNote.getPitch().equals(moddable.getPitch()) &&

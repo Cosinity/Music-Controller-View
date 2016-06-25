@@ -1,31 +1,43 @@
-When combining the models we realized that both of ours were fairly similar, so we chose to use Nick's with some minor modifications.
+The two largest additions are those of the InteractiveMusicController and the InteractiveView interface (and its implementation).
 
-Our Controller in effect provides all the functionality of both the model and the view. It has a field to contain a model (the piece
-to play); the method play() takes a View as an input. We chose to do it this way so that one piece could easily be displayed by any
-view without having to change the controller itself.
+InteractiveView is a new view interface that extends the old interface, designed for the new interactive-composite view. Many of its
+new methods are to get the text from the text boxes on the view, to be passed to the constructor. It also has methods to add mouse-
+key- and actionlisteners, and methods for some keyboard functions.
 
-The implementation of the controller, MusicController, simply delegates all relevant methods to its model (or view) as appropriate.
+InteractiveMusicController extends the old music controller, and adds additional functionality related to the new interactive view.
+It must be used with the new composite view because it passes listeners and calls other methods exclusive to InteractiveView.
+It acts as the action listener for the buttons on the view.
 
-Our View interface, IMusicView, has one method, play(), that takes in a Controller and "displays" the piece in whatever method this view uses.
+The implementation of InteractiveView, CompositeView, functions much like the old GUI view with a MIDI view added on top. It has two
+panels: the music and the editing tools. The music panel is of a new type, CompositeMusicPanel which extends the previous MusicPanel.
+It provides two new functionalities: drawing a red line at the current beat, and settigThe musical staff scrolls automatically in 
+time with the music. The editing panel provides five text fields and three buttons: the top two buttons are used to add a note 
+with the given parameters, or edit the selected note to have the given ones. Changes to a note are not saved until the edit button 
+is pressed. The bottom button changes the tempo of the song and transposes it up or down according to the parameters in the text fields.
 
-The console view, ConsoleView, is mostly similar to the method from the last assignment, but we have added an output field so that it can be
-printed to the console or any other output stream should one desire.
+Program arguments should be given in the following format: {file name} {view type}
+	e.g. mary-little-lamb.txt visual
+The following keywords correspond to the following views:
+	"visual" creates a GUI view
+	"midi" creates a MIDI view
+	"console" creates a console view
+	"composite" creates a composite view
 
-The GUI view, GuiViewFrame, acts as mostly a frame for the MusicPanel. In the panel there are two public methods: paintComponent() and setPiece().
-setPiece() is used to assign (or change) the music that the panel is used to display. paintComponent() draws the staff, notes, note names, and beat numbers.
+Key bindings:
+	"space" or "p" to paus and unpause the piece
+	"home" to go to the beginning of the piece
+	"end" to go to the end of the piece
 
-The MIDI view, MidiViewImpl, converts all the notes passed by a controller into MIDI events, adds them to a Sequence, then plays the sequence using a Sequencer. 
-The addition of a second constructor that takes in a predefined sequence allows for the use of a custom sequence for testing purposes - 
-the Mock Sequence that writes every event to a human-readable static log instead of playing the notes. The log needs to be manually reset after playing a file. 
-This is added to the initialization of the tests for MIDI.
+Mouse controls:
+	Left-click a note on the staff to select it for editing
+	Right-click a note on the staff to remove it
 
-Within MusicModel we have added a builder class used when creating a piece from a file.
-
-The class ViewFactory has one static method, which creates a View based on the input string.
-	"g", "gui", or "GUI" creates a GUI view
-	"m", "midi", or "MIDI" creates a MIDI view
-	"c", "console", or "Console" creates a console view
-	Anything else produces an IllegalArgumentException
-
-The program arguments should given in the form of: {file name} {type of view}
-	e.g.: mary-little-lamb.txt g
+Changes from previous assignment:
+	Pitch class was cleaned up and a create(String) method was added
+	In MusicPanel:
+		height field was added as an optimization
+		NOTE_SIZE was made public and static to be accessed from other classes
+		lastNote fields and getWidth() method were added for scrolling purposes
+		piece, lowNote, and highNote fields and staffHeight() method were made protected
+	setTempo() method was added to IMusicController
+	views were refactored to take a list of notes rather than a Controller

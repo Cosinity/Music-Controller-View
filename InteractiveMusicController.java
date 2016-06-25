@@ -33,9 +33,11 @@ public class InteractiveMusicController extends MusicController implements Actio
     this.mouseClickListener.setLeftAction((int x, int y) -> {
       this.selectedNote = this.view.noteAtPos(x, y);
       this.view.selectNote(this.selectedNote);
+      this.view.resetFocus();
     });
     this.mouseClickListener.setRightAction((int x, int y) -> {
       this.removeNote(this.view.noteAtPos(x, y));
+      this.view.resetFocus();
     });
   }
 
@@ -71,7 +73,6 @@ public class InteractiveMusicController extends MusicController implements Actio
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    System.out.println("Hello");
     Pitch p;
     int octave;
     int duration;
@@ -96,32 +97,28 @@ public class InteractiveMusicController extends MusicController implements Actio
     }
     switch (e.getActionCommand()) {
       case "Add":
-        this.addNote(new Note(p, octave, duration, startBeat));
+        Note addedNote = new Note(p, octave, duration, startBeat);
+        this.addNote(addedNote);
+        this.selectedNote = addedNote;
         this.view.resetFocus();
+        this.view.play(this);
+        this.view.togglePause();
         break;
       case "Edit":
-        this.changeDuration(this.selectedNote, duration);
-        this.changeStart(this.selectedNote, startBeat);
-        Note n = this.selectedNote.copy();
-        int semitones = 0;
-        if (this.selectedNote.compareTo(new Note(p, octave, 0, 0)) < 0) {
-          while (!(n.getPitch().equals(p) && n.getOctave() == octave)) {
-            n.transpose(1);
-            semitones++;
-          }
-        } else {
-          while (!(n.getPitch().equals(p) && n.getOctave() == octave)) {
-            n.transpose(-1);
-            semitones++;
-          }
-        }
-        this.changePitch(this.selectedNote, semitones);
+        this.removeNote(this.selectedNote);
+        Note changedNote = new Note(p, octave, duration, startBeat);
+        this.addNote(changedNote);
+        this.selectedNote = changedNote;
         this.view.resetFocus();
+        this.view.play(this);
+        this.view.togglePause();
         break;
       case "Change":
         this.transpose(transpose);
         this.setTempo(tempo);
         this.view.resetFocus();
+        this.view.play(this);
+        this.view.togglePause();
         break;
       default:
         break;

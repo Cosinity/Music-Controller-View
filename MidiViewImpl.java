@@ -35,7 +35,7 @@ public class MidiViewImpl implements MidiView<Note> {
   }
 
   @Override
-  public void play(IMusicController piece) {
+  public void play(IMusicController<Note> piece) {
     try {
       this.sequencer.setTempoInMPQ(piece.getTempo());
       Track track = sequence.createTrack();
@@ -62,11 +62,13 @@ public class MidiViewImpl implements MidiView<Note> {
       this.sequencer.setSequence(sequence);
       this.sequencer.start();
 
-      if (this.sequencer.getMicrosecondLength() == this.sequencer.getMicrosecondPosition()) {
-        this.sequencer.stop();
-        this.sequencer.close();
+      int totalLength = -1;
+      for (Note n : notes) {
+        if (this.sequencer.getMicrosecondLength() == this.sequencer.getMicrosecondPosition()) {
+          this.sequencer.stop();
+          this.sequencer.close();
+        }
       }
-
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -87,5 +89,10 @@ public class MidiViewImpl implements MidiView<Note> {
     float temp = this.sequencer.getTempoInMPQ();
     this.sequencer.start();
     this.sequencer.setTempoInMPQ(temp);
+  }
+
+  @Override
+  public void restart() {
+    this.sequencer.setTickPosition(0);
   }
 }

@@ -12,6 +12,7 @@ import cs3500.music.model.Note;
  */
 public interface InteractiveView<T> extends IMusicView<T> {
   // Note-specific methods
+
   /**
    * Selects the given note. Specifically, puts a colored outline around the note and updates the
    * text fields with its parameters.
@@ -34,6 +35,7 @@ public interface InteractiveView<T> extends IMusicView<T> {
   String getNewPitch();
 
   // Piece-wide methods
+
   /**
    * Gets the input from the tempo text field
    */
@@ -51,12 +53,14 @@ public interface InteractiveView<T> extends IMusicView<T> {
 
   /**
    * Sets the keyboard listener of the interactive view to the one that is given
+   *
    * @param k the keyboard listener to set to
    */
   void addKeyListener(KeyListener k);
 
   /**
    * Sets the mouse listener of the interactive view to the one that is given
+   *
    * @param m the mouse listener to set to
    */
   void addMouseListener(MouseListener m);
@@ -83,6 +87,7 @@ public interface InteractiveView<T> extends IMusicView<T> {
 
   /**
    * Adds an action listener to the view
+   *
    * @param al the action listener to add
    */
   void addActionListener(ActionListener al);
@@ -90,5 +95,5 @@ public interface InteractiveView<T> extends IMusicView<T> {
   /**
    * Restarts the midi playback when adding/editing notes
    */
-  void restartMidi(IMusicController controller);
+  void restart(IMusicController<Note> controller);
 }
