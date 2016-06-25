@@ -217,4 +217,14 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     this.scrollPanel.setFocusable(true);
     this.scrollPanel.requestFocus();
   }
+
+  @Override
+  public void restartMidi(IMusicController controller) {
+    this.timer.restart();
+    this.togglePause();
+    this.midiView.play(controller);
+    this.midiView.pause();
+    this.goToStart();
+    this.togglePause();
+  }
 }
