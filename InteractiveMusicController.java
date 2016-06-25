@@ -16,8 +16,7 @@ import cs3500.music.view.CompositeView;
 import cs3500.music.view.InteractiveView;
 
 /**
- * Interactive Music Controller for the Composite view; retains backwards compatibility with other
- * views.
+ * Interactive Music Controller for the Composite view
  */
 public class InteractiveMusicController extends MusicController implements ActionListener {
 
@@ -25,11 +24,6 @@ public class InteractiveMusicController extends MusicController implements Actio
   private MouseClickListener mouseClickListener;
   private KeyboardListener keyboardListener;
   private Note selectedNote;
-
-  public InteractiveMusicController() {
-    super();
-    this.init();
-  }
 
   public InteractiveMusicController(GenericMusicPiece<Note> piece) {
     super(piece);
@@ -59,7 +53,7 @@ public class InteractiveMusicController extends MusicController implements Actio
     Map<Integer, Runnable> pressed = new HashMap<Integer, Runnable>();
     Map<Integer, Runnable> released = new HashMap<Integer, Runnable>();
 
-    pressed.put(KeyEvent.VK_SPACE, () -> this.view.togglePause());
+    typed.put(' ', () -> this.view.togglePause()); // pause/unpause with spacebar
     pressed.put(KeyEvent.VK_HOME, () -> this.view.goToStart());
     pressed.put(KeyEvent.VK_END, () -> this.view.goToEnd());
 
@@ -70,12 +64,16 @@ public class InteractiveMusicController extends MusicController implements Actio
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    Pitch p = Pitch.A;
-    int octave = 0;
-    int duration = 0;
-    int startBeat = 0;
-    long tempo = 0;
-    int transpose = 0;
+
+    if (e.getActionCommand().equals("hello")) {
+      System.out.println("Eureka");
+    }
+    Pitch p;
+    int octave;
+    int duration;
+    int startBeat;
+    int tempo;
+    int transpose;
     try {
       String pitch = this.view.getNewPitch();
       if (pitch.length() == 2) {
@@ -87,16 +85,15 @@ public class InteractiveMusicController extends MusicController implements Actio
       }
       duration = Integer.parseInt(this.view.getNewDuration());
       startBeat = Integer.parseInt(this.view.getNewStartBeat());
-      tempo = Long.parseLong(this.view.getNewTempo());
+      tempo = Integer.parseInt(this.view.getNewTempo());
       transpose = Integer.parseInt(this.view.getTranspose());
-    } catch (NumberFormatException ex) {
-      return;
-    } catch (IllegalArgumentException ex) {
+    } catch (Exception ex) {
       return;
     }
     switch (e.getActionCommand()) {
       case "Add":
         this.addNote(new Note(p, octave, duration, startBeat));
+        this.view.resetFocus();
         break;
       case "Edit":
         this.changeDuration(this.selectedNote, duration);
@@ -115,11 +112,12 @@ public class InteractiveMusicController extends MusicController implements Actio
           }
         }
         this.changePitch(this.selectedNote, semitones);
+        this.view.resetFocus();
         break;
       case "Change":
         this.transpose(transpose);
-        // TODO
-        //this.changeTempo(tempo);
+        this.setTempo(tempo);
+        this.view.resetFocus();
         break;
       default:
         break;

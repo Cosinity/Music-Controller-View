@@ -1,6 +1,7 @@
 package cs3500.music.view;
 
 import java.awt.*;
+
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -8,6 +9,7 @@ import java.awt.event.MouseListener;
 import javax.swing.*;
 
 import cs3500.music.controller.IMusicController;
+import cs3500.music.controller.InteractiveMusicController;
 import cs3500.music.model.Note;
 
 /**
@@ -42,13 +44,11 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
     this.pack();
     this.timer = new Timer(1, e -> {
       this.displayPanel.setBeat(this.midiView.getBeat());
-      System.out.println(this.midiView.getBeat());
+      if (this.midiView.getBeat() > 24) {
+        JScrollBar sb = scrollPanel.getHorizontalScrollBar();
+        sb.setValue((int) (this.midiView.getBeat() - 24) * MusicPanel.NOTE_SIZE);
+      }
     });
-    // TODO: 2016-06-23 CREATE THE ACTIONLISTENER FOR THE TIMER
-    // ActionListener Needs
-    // for current beat: timer asks midi view for current beat, passes it to the gui view,
-    // and that redraws everything
-    // gui view needs to keep track of the current beat for the red bar
     this.timer.start();
   }
 
@@ -98,7 +98,7 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
     // Transposition label and text box
     piecePanel.add(new JLabel("Transpose: "));
-    this.transposeText = new JTextField(2);
+    this.transposeText = new JTextField("0", 2);
     piecePanel.add(transposeText);
 
     // Change button
@@ -124,19 +124,23 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
   @Override
   public void addActionListener(ActionListener al) {
+    this.editButton.setActionCommand("hello");
     this.editButton.addActionListener(al);
-    this.addButton.addActionListener(al);
-    this.changeButton.addActionListener(al);
   }
 
   @Override
   public void goToStart() {
-
+    JScrollBar sb = this.scrollPanel.getHorizontalScrollBar();
+    sb.setValue(sb.getMinimum());
+    this.timer.restart();
+    this.timer.stop();
   }
 
   @Override
   public void goToEnd() {
-
+    JScrollBar sb = this.scrollPanel.getHorizontalScrollBar();
+    sb.setValue(sb.getMaximum());
+    this.timer.stop();
   }
 
   @Override
@@ -181,6 +185,7 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
   @Override
   public void play(IMusicController<Note> piece) {
+    this.tempoText.setText(String.valueOf(piece.getTempo()));
     this.displayPanel.setPiece(piece);
     this.displayPanel.setPreferredSize(new Dimension(displayPanel.getWidth(),
             displayPanel.getHeight()));
@@ -202,7 +207,7 @@ public class CompositeView extends JFrame implements InteractiveView<Note> {
 
   @Override
   public void resetFocus() {
-    this.setFocusable(true);
-    this.requestFocus();
+    this.scrollPanel.setFocusable(true);
+    this.scrollPanel.requestFocus();
   }
 }
